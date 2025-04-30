@@ -13,3 +13,7 @@ AI Guruji
 
 #### Github Branch
 - master
+
+#### jks file command
+keytool -genkey -v -keystore D:\XCoderInfotech\Projects\AIGuruji\android\app\AIGuruji.jks -alias AIGuruji -keyalg RSA -sigalg SHA1withRSA -keysize 2048 -validity 10000
+

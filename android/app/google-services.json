@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "207089202704",
+    "project_id": "aiguruji-9f371",
+    "storage_bucket": "aiguruji-9f371.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207089202704:android:87a14503713f1ea8523c95",
+        "android_client_info": {
+          "package_name": "com.xcoder.aiguruji"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4yfdQBR4oJTPiW4Qi3TvkGygbJPx0-lU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

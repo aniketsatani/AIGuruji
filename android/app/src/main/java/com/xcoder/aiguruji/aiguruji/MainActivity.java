@@ -1,4 +1,4 @@
-package com.xcoder.aiguruji.aiguruji;
+package com.xcoder.aiguruji;
 
 import io.flutter.embedding.android.FlutterActivity;
 
