@@ -11,15 +11,22 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/splashlogo.png', height: 150.w, width: 150.w),
-            heightBox(15),
-            TextWidget(text: 'AI Guruji', fontSize: 35.sp, fontFamily: 'B'),
-          ],
-        ),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.asset("assets/images/splashbg.jpg",
+              height: height, width: width, fit: BoxFit.fill),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/splashlogo.png', height: 150.w, width: 150.w),
+                heightBox(15),
+                TextWidget(text: 'AI Guruji', fontSize: 35.sp, fontFamily: 'B'),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
