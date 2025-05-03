@@ -20,7 +20,7 @@ class ChatRoomScreen extends StatelessWidget {
           Obx(() {
             return InkWell(
               onTap: () {
-                if (userId.isNotEmpty)
+                if (userId.value.isNotEmpty)
                   Get.dialog(
                     barrierDismissible: true,
                     Dialog(
@@ -29,18 +29,32 @@ class ChatRoomScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20.r),
                           side: BorderSide(width: 0.5.w, color: purpleShad)),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 30.h),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            ClipRRect(
+                            Container(
+                              height: 100.w,
+                              width: 100.w,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: white, width: 0.6.w),
+                              ),
+                              child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100.r),
-                                child: Container(
-                                    decoration:
-                                        BoxDecoration(border: Border.all(width: 0.6, color: white)),
-                                    child: ImageView(
-                                        imageUrl: image.value, height: 100.w, width: 100.w))),
+                                child:
+                                ImageView(imageUrl: image.value, height: height, width: width),
+                              ),
+                            ),
+                            // ClipRRect(
+                            //     borderRadius: BorderRadius.circular(100.r),
+                            //     child: Container(
+                            //         decoration:
+                            //             BoxDecoration(border: Border.all(width: 0.6, color: white)),
+                            //         child:
+                            //         ImageView(imageUrl: image.value, height: 100.w, width: 100.w))),
                             heightBox(20),
                             TextWidget(text: name.value, fontSize: 24.sp, fontFamily: 'B'),
                             heightBox(10),

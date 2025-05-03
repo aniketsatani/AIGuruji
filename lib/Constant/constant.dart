@@ -6,7 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 final box = GetStorage();
-String userId = '';
+RxString userId = ''.obs;
 RxString name = ''.obs;
 RxString email = ''.obs;
 RxString image = ''.obs;
