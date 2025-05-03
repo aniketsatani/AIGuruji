@@ -29,19 +29,26 @@ class ChatRoomScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20.r),
                           side: BorderSide(width: 0.5.w, color: purpleShad)),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
+                        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 30.h),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             ClipRRect(
                                 borderRadius: BorderRadius.circular(100.r),
-                                child:
-                                    ImageView(imageUrl: image.value, height: 100.w, width: 100.w)),
+                                child: Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all(width: 0.6, color: white)),
+                                    child: ImageView(
+                                        imageUrl: image.value, height: 100.w, width: 100.w))),
                             heightBox(20),
                             TextWidget(text: name.value, fontSize: 24.sp, fontFamily: 'B'),
                             heightBox(10),
-                            TextWidget(text: email.value, fontSize: 20.sp, maxLines: 2),
+                            TextWidget(
+                                text: email.value,
+                                fontSize: 18.sp,
+                                maxLines: 2,
+                                textAlign: TextAlign.center),
                           ],
                         ),
                       ),
