@@ -7,6 +7,20 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 final box = GetStorage();
 String userId = '';
+RxString name = ''.obs;
+RxString email = ''.obs;
+RxString image = ''.obs;
+
+String baseUrl = '';
+String apiKey = '';
+
+String privacy = '';
+String terms = '';
+String appLink = '';
+String appRate = '';
+
+String version = '';
+int buildNumber = 0;
 
 String versionApp = '';
 int buildNumberApp = 0;
@@ -27,10 +41,37 @@ Future getAppVersion() async {
   //print('hello version --- ${version} ---- ${buildNumber}');
 }
 
-heightBox(double height){
+heightBox(double height) {
   return SizedBox(height: height.h);
 }
 
-weightBox(double width){
+weightBox(double width) {
   return SizedBox(width: width.h);
+}
+
+class UserModel {
+  String id;
+  String name;
+  String email;
+  String image;
+
+  UserModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.image,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {'id': id, 'name': name, 'email': email, 'image': image};
+  }
+
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      image: map['image'] ?? '',
+    );
+  }
 }

@@ -1,4 +1,6 @@
 import 'package:aiguruji/Constant/colors.dart';
+import 'package:aiguruji/Constant/constant.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -74,4 +76,99 @@ class SvgView extends StatelessWidget {
       ),
     );
   }
+}
+
+class ImageView extends StatelessWidget {
+  ImageView({
+    Key? key,
+    required this.imageUrl,
+    this.height,
+    this.width,
+    this.radius,
+    this.memCacheHeight,
+    this.fit,
+  }) : super(key: key);
+
+  final String imageUrl;
+  final double? width;
+  final double? height;
+  final double? radius;
+  final BoxFit? fit;
+  final int? memCacheHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(radius ?? 0.r),
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        height: height,
+        width: width,
+        fit: fit ?? BoxFit.cover,
+        memCacheHeight: memCacheHeight,
+        fadeInDuration: const Duration(milliseconds: 375),
+        placeholderFadeInDuration: const Duration(milliseconds: 375),
+        placeholder:
+            (context, url) => Container(
+          height: height,
+          width: width,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: transparent,
+            border: Border.all(color: iconGrey.withValues(alpha: 0.3), width: 0.7.w),
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Image.asset(
+            'assets/images/splashlogo.png',
+            height: 35.w,
+            width: 35.w,
+            fit: BoxFit.cover,
+          ),
+        ),
+        errorWidget:
+            (context, url, error) => Container(
+          height: height,
+          width: width,
+          color: transparent,
+          alignment: Alignment.center,
+          child: Image.asset(
+            'assets/images/splashlogo.png',
+            height: 35.w,
+            width: 35.w,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+showCustomSnackBar({
+  required BuildContext context,
+  required Widget iconWidget,
+  required Widget textWidget,
+}) {
+  final snackBar = SnackBar(
+    margin: EdgeInsets.only(
+        bottom: height - 90,
+        left: 10,
+        right: 10),
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: black.withValues(alpha: 0.7),
+    dismissDirection: DismissDirection.none,
+    duration: Duration(seconds: 2),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16.r),
+    ),
+    content: Container(
+      height: 25.h,
+      padding: EdgeInsets.symmetric(horizontal: 5.w),
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [iconWidget, SizedBox(width: 15.w), Expanded(child: textWidget)],
+      ),
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

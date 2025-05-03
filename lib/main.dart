@@ -20,8 +20,8 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]); /// phone orientation
 
-  //box.writeIfNull('userId', userId);
-  //userId = box.read('userId');
+  box.writeIfNull('userId', userId);
+  userId = box.read('userId');
 
   await firebaseCrashytics(); /// app crash detect
 
@@ -44,9 +44,9 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             useMaterial3: false,
-            appBarTheme: AppBarTheme(backgroundColor: black, elevation: 0),
-            colorScheme: ColorScheme.fromSwatch().copyWith(secondary: black),
-            scaffoldBackgroundColor: black,
+            appBarTheme: AppBarTheme(backgroundColor: scaffoldColor, elevation: 0),
+            colorScheme: ColorScheme.fromSwatch().copyWith(secondary: scaffoldColor),
+            scaffoldBackgroundColor: scaffoldColor,
             splashColor: transparent,
             highlightColor: transparent,
           ),

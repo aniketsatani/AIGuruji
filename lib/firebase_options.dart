@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '207089202704',
     projectId: 'aiguruji-9f371',
     storageBucket: 'aiguruji-9f371.firebasestorage.app',
+    androidClientId: '207089202704-8ro7mmrpcd1952mk6s6lfbksv9hlht3s.apps.googleusercontent.com',
+    iosClientId: '207089202704-ete6udaabg2ggl1janljrh0d3ibmn5c0.apps.googleusercontent.com',
     iosBundleId: 'com.xcoder.aiguruji',
   );
+
 }

@@ -1,14 +1,19 @@
 import 'package:aiguruji/Constant/colors.dart';
 import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Constant/constant.dart';
+import 'package:aiguruji/Controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+   SplashScreen({super.key});
+
+  final SplashController controller = Get.put(SplashController());
 
   @override
   Widget build(BuildContext context) {
+    controller.nextScreen();
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Stack(
