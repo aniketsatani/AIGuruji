@@ -8,7 +8,7 @@ class SplashController extends GetxController {
   nextScreen() {
     Future.delayed(const Duration(seconds: 1), () {
 
-      userId.value.isEmpty
+      userId.isEmpty
           ? Get.off(
             () => LoginScreen(),
         transition: Transition.fadeIn,

@@ -30,10 +30,10 @@ class LoginController extends GetxController {
         UserCredential result = await FirebaseAuth.instance.signInWithCredential(authCredential);
 
         box.write('userId', result.user!.uid.toString());
-        userId.value = box.read('userId');
+        userId = box.read('userId');
 
         UserModel userModel = UserModel(
-          id: userId.value,
+          id: userId,
           name: result.user!.displayName.toString(),
           email: result.user!.email.toString(),
           image: result.user!.photoURL.toString(),

@@ -9,7 +9,7 @@ class Api {
   /// Check User Exists Yes or No
   Future<bool> checkUserExists() async {
     try {
-      DocumentSnapshot doc = await Users.doc(userId.value).get();
+      DocumentSnapshot doc = await Users.doc(userId).get();
       if (doc.exists) {
         return true;
       } else {
@@ -22,20 +22,20 @@ class Api {
 
   /// Add UserData
   Future addUserData({required UserModel userModel}) async {
-    await Users.doc(userId.value).set(userModel.toMap());
+    await Users.doc(userId).set(userModel.toMap());
   }
 
   /// Update UserData
   Future updateUserData({required String image}) async {
-    await Users.doc(userId.value).update({'image': image, 'imageType': 'asset'});
+    await Users.doc(userId).update({'image': image, 'imageType': 'asset'});
   }
 
   /// Get Userid wise Data
   Future getUser() async {
-    DocumentSnapshot doc = await Users.doc(userId.value).get();
+    DocumentSnapshot doc = await Users.doc(userId).get();
     if (doc.exists) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      userId.value = data['id'] ?? '';
+      userId = data['id'] ?? '';
       name.value = data['name'] ?? '';
       email.value = data['email'] ?? '';
       image.value = data['image'] ?? '';

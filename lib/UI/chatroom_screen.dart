@@ -20,7 +20,7 @@ class ChatRoomScreen extends StatelessWidget {
           Obx(() {
             return InkWell(
               onTap: () {
-                if (userId.value.isNotEmpty)
+                if (userId.isNotEmpty)
                   Get.dialog(
                     barrierDismissible: true,
                     Dialog(
