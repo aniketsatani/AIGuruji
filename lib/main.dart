@@ -20,8 +20,7 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]); /// phone orientation
 
-  box.writeIfNull('userId', userId);
-  userId = box.read('userId');
+  userId = box.read('userId') ?? '';
 
   await firebaseCrashytics(); /// app crash detect
 
