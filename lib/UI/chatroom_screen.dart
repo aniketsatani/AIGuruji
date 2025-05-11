@@ -2,7 +2,6 @@ import 'package:aiguruji/Constant/colors.dart';
 import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/Controller/chatroom_controller.dart';
-import 'package:aiguruji/ModelClass/message_model.dart';
 import 'package:aiguruji/UI/messagebubble_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -118,12 +117,14 @@ class ChatRoomScreen extends StatelessWidget {
                       onTap: () {
                         final text = controller.textController.text.trim();
                         if (text.isNotEmpty) {
-                          controller.sendMessage(
-                              userId: userId, chatroomId: '12345', text: text);
+                          controller.sendMessage(userId: userId, chatroomId: '12345', text: text);
                           controller.textController.clear();
                         }
                       },
-                      child: Icon(Icons.send,color: black,)),
+                      child: Icon(
+                        Icons.send,
+                        color: black,
+                      )),
                   contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 ),
               ),
@@ -196,10 +197,11 @@ class ChatRoomScreen extends StatelessWidget {
                   itemCount: messages.length,
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
                   itemBuilder: (context, index) {
                     final data = messages[index].data() as Map<String, dynamic>;
-                    final message = Message.fromMap(data);
-                    return MessageBubble(message: message);
+                   // final message = Message.fromMap(data);
+                    return MessageBubble(message: data);
                   },
                 ),
               ),
@@ -207,46 +209,47 @@ class ChatRoomScreen extends StatelessWidget {
           },
         )
 
-        // Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 20.w),
-        //   child: Center(
-        //     child: Column(
-        //       children: [
-        //         Spacer(),
-        //         TextWidget(text: 'Under Development Chat Screen', fontSize: 20.sp),
-        //         Spacer(),
-        //         InkWell(
-        //           onTap: () {
-        //             box.erase();
-        //             googleSignIn.signOut();
-        //             Get.offAll(
-        //               () => LoginScreen(),
-        //               transition: Transition.fadeIn,
-        //               duration: Duration(milliseconds: 500),
-        //             );
-        //           },
-        //           child: Container(
-        //             height: 50.h,
-        //             margin: EdgeInsets.symmetric(horizontal: 20.w),
-        //             width: width,
-        //             alignment: Alignment.center,
-        //             decoration: BoxDecoration(
-        //               borderRadius: BorderRadius.circular(4.r),
-        //               color: transparent,
-        //               border: Border.all(
-        //                 color: purpleShad,
-        //                 width: 2.w,
-        //               ),
-        //             ),
-        //             child: TextWidget(
-        //                 text: 'Log out', fontFamily: 'S', fontSize: 17.sp, color: purpleShad),
-        //           ),
-        //         ),
-        //         heightBox(30)
-        //       ],
-        //     ),
-        //   ),
-        // ),
+
         );
   }
 }
+// Padding(
+//   padding: EdgeInsets.symmetric(horizontal: 20.w),
+//   child: Center(
+//     child: Column(
+//       children: [
+//         Spacer(),
+//         TextWidget(text: 'Under Development Chat Screen', fontSize: 20.sp),
+//         Spacer(),
+//         InkWell(
+//           onTap: () {
+//             box.erase();
+//             googleSignIn.signOut();
+//             Get.offAll(
+//               () => LoginScreen(),
+//               transition: Transition.fadeIn,
+//               duration: Duration(milliseconds: 500),
+//             );
+//           },
+//           child: Container(
+//             height: 50.h,
+//             margin: EdgeInsets.symmetric(horizontal: 20.w),
+//             width: width,
+//             alignment: Alignment.center,
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(4.r),
+//               color: transparent,
+//               border: Border.all(
+//                 color: purpleShad,
+//                 width: 2.w,
+//               ),
+//             ),
+//             child: TextWidget(
+//                 text: 'Log out', fontFamily: 'S', fontSize: 17.sp, color: purpleShad),
+//           ),
+//         ),
+//         heightBox(30)
+//       ],
+//     ),
+//   ),
+// ),

@@ -38,7 +38,7 @@ class TextWidget extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign ?? TextAlign.start,
-      maxLines: maxLines ?? 1,
+      maxLines: maxLines == null ? maxLines : 1,
       overflow: overflow,
       softWrap: true,
       style: TextStyle(
