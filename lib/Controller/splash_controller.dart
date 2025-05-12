@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 class SplashController extends GetxController {
   nextScreen() {
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 4), () {
       userId.isEmpty
           ? Get.off(
               () => LoginScreen(),

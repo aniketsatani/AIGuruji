@@ -12,7 +12,7 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isUser = message['sender'] == 'user';
-    print('print --- ${message['response_text']}');
+    //print('print --- ${message['response_text']}');
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,

@@ -40,7 +40,7 @@ class ChatroomController extends GetxController {
       'timestamp': DateTime.now(),
     });
 
-    final url = Uri.parse('https://e4df-150-107-232-24.ngrok-free.app/text');
+    final url = Uri.parse('https://8b47-150-107-232-24.ngrok-free.app');
 
     final response = await http.post(
       url,

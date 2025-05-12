@@ -142,7 +142,7 @@ class ChatRoomScreen extends StatelessWidget {
               .snapshots(),
           builder: (context, snapshot) {
             // LOADING STATE
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (!snapshot.hasData) {
               return Center(
                 child: Padding(
                   padding: EdgeInsets.only(bottom: height / 13),
@@ -200,17 +200,14 @@ class ChatRoomScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 10.w),
                   itemBuilder: (context, index) {
                     final data = messages[index].data() as Map<String, dynamic>;
-                   // final message = Message.fromMap(data);
+                    // final message = Message.fromMap(data);
                     return MessageBubble(message: data);
                   },
                 ),
               ),
             );
           },
-        )
-
-
-        );
+        ));
   }
 }
 // Padding(
