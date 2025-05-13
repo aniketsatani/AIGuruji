@@ -1,5 +1,4 @@
 import 'package:aiguruji/Constant/colors.dart';
-import 'package:aiguruji/Constant/constant.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -150,7 +149,7 @@ showCustomSnackBar({
 }) {
   final snackBar = SnackBar(
     margin: EdgeInsets.only(
-        bottom: height - 90,
+        bottom: 10,
         left: 10,
         right: 10),
     behavior: SnackBarBehavior.floating,

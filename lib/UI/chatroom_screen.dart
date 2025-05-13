@@ -2,6 +2,7 @@ import 'package:aiguruji/Constant/colors.dart';
 import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/Controller/chatroom_controller.dart';
+import 'package:aiguruji/UI/login_screen.dart';
 import 'package:aiguruji/UI/messagebubble_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -53,13 +54,6 @@ class ChatRoomScreen extends StatelessWidget {
                                       imageUrl: image.value, height: height, width: width),
                                 ),
                               ),
-                              // ClipRRect(
-                              //     borderRadius: BorderRadius.circular(100.r),
-                              //     child: Container(
-                              //         decoration:
-                              //             BoxDecoration(border: Border.all(width: 0.6, color: white)),
-                              //         child:
-                              //         ImageView(imageUrl: image.value, height: 100.w, width: 100.w))),
                               heightBox(20),
                               TextWidget(text: name.value, fontSize: 24.sp, fontFamily: 'B'),
                               heightBox(10),
@@ -68,6 +62,37 @@ class ChatRoomScreen extends StatelessWidget {
                                   fontSize: 18.sp,
                                   maxLines: 2,
                                   textAlign: TextAlign.center),
+                              heightBox(30),
+                              InkWell(
+                                onTap: () {
+                                  box.erase();
+                                  googleSignIn.signOut();
+                                  Get.offAll(
+                                    () => LoginScreen(),
+                                    transition: Transition.fadeIn,
+                                    duration: Duration(milliseconds: 500),
+                                  );
+                                },
+                                child: Container(
+                                  height: 50.h,
+                                  margin: EdgeInsets.symmetric(horizontal: 30.w),
+                                  width: width,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15.r),
+                                    color: transparent,
+                                    border: Border.all(
+                                      color: purpleShad,
+                                      width: 0.5.w,
+                                    ),
+                                  ),
+                                  child: TextWidget(
+                                      text: 'Log out',
+                                      fontFamily: 'S',
+                                      fontSize: 17.sp,
+                                      color: purpleShad),
+                                ),
+                              ),
                             ],
                           ),
                         ),

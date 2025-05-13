@@ -30,7 +30,6 @@ class LoginScreen extends StatelessWidget {
                 text:
                     'The dialogue format makes it possible for AI Guruji to answer followup questions, admit its mistakes, challenge incorrect premises, and reject inappropriate requests.',
                 fontSize: 16.sp,
-                maxLines: 4,
                 textAlign: TextAlign.center,
                 fontFamily: 'R'),
             Spacer(),

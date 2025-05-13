@@ -25,8 +25,9 @@ class _SplashScreenState extends State<SplashScreen> {
     _videoController = VideoPlayerController.asset("assets/videos/splashbgvideo.mp4")
       ..initialize().then((_) {
         setState(() {});
+        _videoController.setVolume(0);
         _videoController.setLooping(true);
-        _videoController.setPlaybackSpeed(0.7);
+        _videoController.setPlaybackSpeed(2);
         _videoController.play();
       });
   }
