@@ -25,6 +25,8 @@ int buildNumber = 0;
 String versionApp = '';
 int buildNumberApp = 0;
 
+RxBool isAILoading = false.obs;
+
 double width = MediaQuery.sizeOf(Get.context!).width;
 double height = MediaQuery.sizeOf(Get.context!).height;
 

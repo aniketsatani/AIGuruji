@@ -3,6 +3,7 @@ import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class MessageBubble extends StatelessWidget {
   final Map<String, dynamic> message;
@@ -42,15 +43,15 @@ class MessageBubble extends StatelessWidget {
         // if (!isUser) SizedBox(width: 8.w),
         Flexible(
           child: Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 5.h),
               margin: EdgeInsets.only(
-                  left: isUser ? 70 : 10, right: isUser ? 10 : 70, top: 5.h, bottom: 5.h),
+                  left: isUser ? 70.w : 5.w, right: isUser ? 5.w : 70.w, top: 5.h, bottom: 5.h),
               decoration: BoxDecoration(
                 color: isUser ? Colors.blueAccent : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: isUser
-                  ? TextWidget(text: message['text'], color: white,maxLines: null)
+                  ? TextWidget(text: message['text'], color: white,fontSize: 17.sp,maxLines: null)
                   : TextResponseWidget(text: message['response_text'])),
         ),
         // if (isUser) SizedBox(width: 8.w),
@@ -115,13 +116,13 @@ class TextResponseWidget extends StatelessWidget {
         // Apply bold styling
         spans.add(TextSpan(
           text: part.substring(2, part.length - 2), // Remove the ** markers
-          style: TextStyle(color: black, fontSize: 14.sp),
+          style: TextStyle(color: black, fontSize: 16.sp / MediaQuery.of(Get.context!).textScaler.scale(1)),
         ));
       } else {
         // Regular text
         spans.add(TextSpan(
           text: part,
-          style: TextStyle(color: black, fontSize: 14.sp),
+          style: TextStyle(color: black, fontSize: 16.sp / MediaQuery.of(Get.context!).textScaler.scale(1)),
         ));
       }
     }

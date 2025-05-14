@@ -218,17 +218,62 @@ class ChatRoomScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 controller: controller.scrollController,
                 physics: BouncingScrollPhysics(),
-                child: ListView.builder(
-                  itemCount: messages.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  itemBuilder: (context, index) {
-                    final data = messages[index].data() as Map<String, dynamic>;
-                    // final message = Message.fromMap(data);
-                    return MessageBubble(message: data);
-                  },
-                ),
+                child: Obx(() {
+                  isAILoading.value;
+                  return Stack(
+                    alignment: Alignment.bottomLeft,
+                    children: [
+                      AnimatedPadding(
+                        padding: EdgeInsets.only(bottom: isAILoading.value ? 45.h : 0),
+                        duration: Duration(milliseconds: 500),
+                        child: ListView.builder(
+                          itemCount: messages.length,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.symmetric(horizontal: 5.w),
+                          itemBuilder: (context, index) {
+                            final data = messages[index].data() as Map<String, dynamic>;
+                            controller.scrollToBottom();
+                            return MessageBubble(message: data);
+                          },
+                        ),
+                      ),
+                      isAILoading.value
+                          ? Padding(
+                              key: ValueKey(isAILoading.value),
+                              padding: EdgeInsets.only(left: 5.w, bottom: 5.h),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 35.w,
+                                    width: 35.w,
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.all(5.r),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border:
+                                          Border.all(color: white.withAlpha(180), width: 0.8.w),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100.r),
+                                      child: Image.asset(
+                                        'assets/images/splashlogo.png',
+                                        height: 35.w,
+                                        width: 35.w,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  TextWidget(
+                                      text: 'Guruji is Typing...', color: white, fontSize: 17.sp),
+                                ],
+                              ),
+                            )
+                          : SizedBox.shrink(key: ValueKey(isAILoading.value))
+                    ],
+                  );
+                }),
               ),
             );
           },
