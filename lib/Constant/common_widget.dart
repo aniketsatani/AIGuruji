@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class TextWidget extends StatelessWidget {
   const TextWidget({
@@ -142,6 +143,17 @@ class ImageView extends StatelessWidget {
   }
 }
 
+void showToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: black.withValues(alpha: 0.7),
+    textColor: white,
+    fontSize: 16.sp,
+  );
+}
+
 showCustomSnackBar({
   required BuildContext context,
   required Widget iconWidget,
@@ -149,7 +161,6 @@ showCustomSnackBar({
 }) {
   final snackBar = SnackBar(
     margin: EdgeInsets.only(
-        bottom: 10,
         left: 10,
         right: 10),
     behavior: SnackBarBehavior.floating,

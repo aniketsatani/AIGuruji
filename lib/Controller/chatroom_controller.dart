@@ -41,7 +41,7 @@ class ChatroomController extends GetxController {
         'text': text,
         'timestamp': DateTime.now(),
       });
-      final url = Uri.parse('https://73bb-163-53-179-83.ngrok-free.app/text');
+      final url = Uri.parse('https://9d80-163-53-179-211.ngrok-free.app/text');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json', 'X-API-Key': 'XCoderInfotechBaba'},

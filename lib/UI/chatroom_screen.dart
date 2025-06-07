@@ -4,10 +4,12 @@ import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/Controller/chatroom_controller.dart';
 import 'package:aiguruji/UI/login_screen.dart';
 import 'package:aiguruji/UI/messagebubble_screen.dart';
+import 'package:aiguruji/UI/speech_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 class ChatRoomScreen extends StatelessWidget {
   ChatRoomScreen({super.key});
@@ -127,31 +129,70 @@ class ChatRoomScreen extends StatelessWidget {
         bottomNavigationBar: Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
-            color: white,
-            height: 80,
+            height: 105.h,
+            margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+            decoration: BoxDecoration(
+                color: black.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(width: 1.w, color: white.withValues(alpha: 0.3))),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: TextField(
-                controller: controller.textController,
-                decoration: InputDecoration(
-                  hintText: "Ask me anything...",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+              padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h, bottom: 5.h),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: controller.textController,
+                    cursorColor: white,
+                    style: TextStyle(color: white),
+                    decoration: InputDecoration(
+                      hintText: "Ask me anything...",
+                      hintStyle: TextStyle(color: white.withValues(alpha: 0.7)),
+                      enabledBorder: commonBorder,
+                      focusedBorder: commonBorder,
+                      disabledBorder: commonBorder,
+                      errorBorder: commonBorder,
+                      focusedErrorBorder: commonBorder,
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          final text = controller.textController.text.trim();
+                          if (text.isNotEmpty) {
+                            controller.sendMessage(userId: userId, chatroomId: '12345', text: text);
+                            controller.textController.clear();
+                          }
+                        },
+                        child: HugeIcon(
+                          icon: HugeIcons.strokeRoundedSent,
+                          color: white,
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
+                    ),
                   ),
-                  suffixIcon: InkWell(
-                      onTap: () {
-                        final text = controller.textController.text.trim();
-                        if (text.isNotEmpty) {
-                          controller.sendMessage(userId: userId, chatroomId: '12345', text: text);
-                          controller.textController.clear();
-                        }
-                      },
-                      child: Icon(
-                        Icons.send,
-                        color: black,
-                      )),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                ),
+                  heightBox(10),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Row(
+                      children: [
+                        Image.asset('assets/images/splashlogo.png', height: 22.w, width: 22.w),
+                        widthBox(10),
+                        TextWidget(
+                          text: 'Speech Response',
+                          fontSize: 14,
+                          color: white.withValues(alpha: 0.8),
+                        ),
+                        Spacer(),
+                        InkWell(
+                          onTap: () {
+                            Get.to(() => SpeechScreen());
+                          },
+                          child: HugeIcon(
+                            icon: HugeIcons.strokeRoundedMic01,
+                            color: white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -245,28 +286,27 @@ class ChatRoomScreen extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Container(
-                                    height: 35.w,
-                                    width: 35.w,
+                                    height: 32.w,
+                                    width: 32.w,
                                     alignment: Alignment.center,
                                     margin: EdgeInsets.all(5.r),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      border:
-                                          Border.all(color: white.withAlpha(180), width: 0.8.w),
+                                      border: Border.all(color: white.withAlpha(180), width: 0.8.w),
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(100.r),
                                       child: Image.asset(
                                         'assets/images/splashlogo.png',
-                                        height: 35.w,
-                                        width: 35.w,
+                                        height: 32.w,
+                                        width: 32.w,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),
                                   SizedBox(width: 8),
                                   TextWidget(
-                                      text: 'Guruji is Typing...', color: white, fontSize: 17.sp),
+                                      text: 'Guruji is Typing...', color: white, fontSize: 16.sp),
                                 ],
                               ),
                             )

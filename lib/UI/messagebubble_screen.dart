@@ -13,7 +13,6 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isUser = message['sender'] == 'user';
-    //print('print --- ${message['response_text']}');
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -22,8 +21,8 @@ class MessageBubble extends StatelessWidget {
       children: [
         if (!isUser)
           Container(
-            height: 35.w,
-            width: 35.w,
+            height: 32.w,
+            width: 32.w,
             alignment: Alignment.center,
             margin: EdgeInsets.all(5.r),
             decoration: BoxDecoration(
@@ -34,8 +33,8 @@ class MessageBubble extends StatelessWidget {
               borderRadius: BorderRadius.circular(100.r),
               child: Image.asset(
                 'assets/images/splashlogo.png',
-                height: 35.w,
-                width: 35.w,
+                height: 30.w,
+                width: 30.w,
                 fit: BoxFit.cover,
               ),
             ),
@@ -57,8 +56,8 @@ class MessageBubble extends StatelessWidget {
         // if (isUser) SizedBox(width: 8.w),
         if (isUser)
           Container(
-            height: 35.w,
-            width: 35.w,
+            height: 32.w,
+            width: 32.w,
             alignment: Alignment.center,
             margin: EdgeInsets.all(5.r),
             decoration: BoxDecoration(
@@ -67,7 +66,7 @@ class MessageBubble extends StatelessWidget {
             ),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(100.r),
-                child: ImageView(imageUrl: image.value, height: 33.h, width: 35.w)),
+                child: ImageView(imageUrl: image.value, height: 32.w, width: 32.w)),
           ),
       ],
     );

@@ -1,3 +1,4 @@
+import 'package:aiguruji/Constant/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -47,9 +48,17 @@ heightBox(double height) {
   return SizedBox(height: height.h);
 }
 
-weightBox(double width) {
+widthBox(double width) {
   return SizedBox(width: width.h);
 }
+
+OutlineInputBorder commonBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(15.r),
+  borderSide: BorderSide(
+    width: 1.w,
+    color: white.withValues(alpha: 0.3),
+  ),
+);
 
 class UserModel {
   String id;
