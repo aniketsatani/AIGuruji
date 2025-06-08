@@ -2,6 +2,7 @@ import 'package:aiguruji/Constant/colors.dart';
 import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/Controller/chatroom_controller.dart';
+import 'package:aiguruji/UI/drawer_screen.dart';
 import 'package:aiguruji/UI/login_screen.dart';
 import 'package:aiguruji/UI/messagebubble_screen.dart';
 import 'package:aiguruji/UI/speech_screen.dart';
@@ -21,6 +22,7 @@ class ChatRoomScreen extends StatelessWidget {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
+
           title: TextWidget(text: 'AI Guruji', fontFamily: 'B', fontSize: 24.sp),
           centerTitle: true,
           actionsPadding: EdgeInsets.only(right: 10.w),
@@ -126,6 +128,7 @@ class ChatRoomScreen extends StatelessWidget {
             }),
           ],
         ),
+        drawer: CustomDrawer(),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
@@ -155,7 +158,7 @@ class ChatRoomScreen extends StatelessWidget {
                         onTap: () {
                           final text = controller.textController.text.trim();
                           if (text.isNotEmpty) {
-                            controller.sendMessage(userId: userId, chatroomId: '12345', text: text);
+                            controller.sendMessage(userId: userId, chatroomId: '67890', text: text);
                             controller.textController.clear();
                           }
                         },
@@ -202,7 +205,7 @@ class ChatRoomScreen extends StatelessWidget {
               .collection('chat')
               .doc(userId)
               .collection('chatRoom')
-              .doc('12345')
+              .doc('67890')
               .collection('message')
               .orderBy('timestamp')
               .snapshots(),

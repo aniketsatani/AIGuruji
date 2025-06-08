@@ -13,7 +13,8 @@ class SplashController extends GetxController {
               transition: Transition.fadeIn,
               duration: Duration(milliseconds: 500),
             )
-          : Get.offAll(
+          :
+      Get.offAll(
               () => ChatRoomScreen(),
               transition: Transition.fadeIn,
               duration: Duration(milliseconds: 500),
