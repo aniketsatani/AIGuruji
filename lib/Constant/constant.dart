@@ -5,8 +5,13 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 final box = GetStorage();
+var uuid = Uuid();
+
+RxString chatRoomId = ''.obs;
+
 String userId = '';
 RxString name = ''.obs;
 RxString email = ''.obs;

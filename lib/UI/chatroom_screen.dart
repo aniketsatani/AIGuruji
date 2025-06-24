@@ -3,7 +3,6 @@ import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/Controller/chatroom_controller.dart';
 import 'package:aiguruji/UI/drawer_screen.dart';
-import 'package:aiguruji/UI/login_screen.dart';
 import 'package:aiguruji/UI/messagebubble_screen.dart';
 import 'package:aiguruji/UI/speech_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,7 +29,6 @@ class ChatRoomScreen extends StatelessWidget {
             Obx(() {
               return InkWell(
                 onTap: () {
-
                   controller.fetchChatRoomsAndMessages();
 
                   // if (userId.isNotEmpty)
@@ -120,11 +118,11 @@ class ChatRoomScreen extends StatelessWidget {
                     child: image.value.isNotEmpty
                         ? ImageView(imageUrl: image.value, height: 33.h, width: 35.w)
                         : Image.asset(
-                            'assets/images/splashlogo.png',
-                            height: 35.w,
-                            width: 35.w,
-                            fit: BoxFit.cover,
-                          ),
+                      'assets/images/splashlogo.png',
+                      height: 35.w,
+                      width: 35.w,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               );
@@ -133,7 +131,10 @@ class ChatRoomScreen extends StatelessWidget {
         ),
         drawer: CustomDrawer(),
         bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding: EdgeInsets.only(bottom: MediaQuery
+              .of(context)
+              .viewInsets
+              .bottom),
           child: Container(
             height: 105.h,
             margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
@@ -161,7 +162,8 @@ class ChatRoomScreen extends StatelessWidget {
                         onTap: () {
                           final text = controller.textController.text.trim();
                           if (text.isNotEmpty) {
-                            controller.sendMessage(userId: userId, chatroomId: 'abcd123456', text: text);
+                            controller.sendMessage(
+                                userId: userId, chatroomId: chatRoomId.value, text: text);
                             controller.textController.clear();
                           }
                         },
@@ -203,127 +205,131 @@ class ChatRoomScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('chatUser')
-              .doc(userId)
-              .collection('chatRoom')
-              .doc('abcd123456')
-              .collection('messages')
-              .orderBy('time')
-              .snapshots(),
-          builder: (context, snapshot) {
-            // LOADING STATE
-            if (!snapshot.hasData) {
-              return Center(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: height / 13),
-                  child: CircularProgressIndicator(color: white),
-                ),
-              );
-            }
-
-            // ERROR STATE
-            if (snapshot.hasError) {
-              return Center(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: height / 20),
-                  child: TextWidget(
-                    text: 'Something went wrong!',
-                    fontSize: 20,
+        body: Obx(() {
+          chatRoomId.value;
+          print('hello chatroom id obx --- ${chatRoomId.value}');
+          return StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('chatUser')
+                .doc(userId)
+                .collection('chatRoom')
+                .doc(chatRoomId.value)
+                .collection('messages')
+                .orderBy('time')
+                .snapshots(),
+            builder: (context, snapshot) {
+              // LOADING STATE
+              if (!snapshot.hasData) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: height / 13),
+                    child: CircularProgressIndicator(color: white),
                   ),
-                ),
-              );
-            }
+                );
+              }
 
-            // DATA STATE
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Padding(
-                padding: EdgeInsets.only(top: height / 4),
-                child: Center(
-                  child: Column(
-                    spacing: 10,
-                    children: [
-                      Image.asset('assets/images/splashlogo.png', height: 100.w, width: 100.w),
-                      TextWidget(
-                        text: 'What can I help you with?',
-                        fontSize: 20,
-                        fontFamily: 'B',
-                      ),
-                    ],
+              // ERROR STATE
+              if (snapshot.hasError) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: height / 20),
+                    child: TextWidget(
+                      text: 'Something went wrong!',
+                      fontSize: 20,
+                    ),
                   ),
-                ),
-              );
-            }
+                );
+              }
 
-            final messages = snapshot.data!.docs;
-
-            controller.scrollToBottom();
-
-            return Align(
-              alignment: Alignment.bottomCenter,
-              child: SingleChildScrollView(
-                controller: controller.scrollController,
-                physics: BouncingScrollPhysics(),
-                child: Obx(() {
-                  isAILoading.value;
-                  return Stack(
-                    alignment: Alignment.bottomLeft,
-                    children: [
-                      AnimatedPadding(
-                        padding: EdgeInsets.only(bottom: isAILoading.value ? 45.h : 0),
-                        duration: Duration(milliseconds: 500),
-                        child: ListView.builder(
-                          itemCount: messages.length,
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          padding: EdgeInsets.symmetric(horizontal: 5.w),
-                          itemBuilder: (context, index) {
-                            final data = messages[index].data() as Map<String, dynamic>;
-                            controller.scrollToBottom();
-                            return MessageBubble(message: data);
-                          },
+              // DATA STATE
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Padding(
+                  padding: EdgeInsets.only(top: height / 4),
+                  child: Center(
+                    child: Column(
+                      spacing: 10,
+                      children: [
+                        Image.asset('assets/images/splashlogo.png', height: 100.w, width: 100.w),
+                        TextWidget(
+                          text: 'What can I help you with?',
+                          fontSize: 20,
+                          fontFamily: 'B',
                         ),
-                      ),
-                      isAILoading.value
-                          ? Padding(
-                              key: ValueKey(isAILoading.value),
-                              padding: EdgeInsets.only(left: 5.w, bottom: 5.h),
-                              child: Row(
-                                children: [
-                                  Container(
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              final messages = snapshot.data!.docs;
+
+              controller.scrollToBottom();
+
+              return Align(
+                alignment: Alignment.bottomCenter,
+                child: SingleChildScrollView(
+                  controller: controller.scrollController,
+                  physics: BouncingScrollPhysics(),
+                  child: Obx(() {
+                    isAILoading.value;
+                    return Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        AnimatedPadding(
+                          padding: EdgeInsets.only(bottom: isAILoading.value ? 45.h : 0),
+                          duration: Duration(milliseconds: 500),
+                          child: ListView.builder(
+                            itemCount: messages.length,
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            padding: EdgeInsets.symmetric(horizontal: 5.w),
+                            itemBuilder: (context, index) {
+                              final data = messages[index].data() as Map<String, dynamic>;
+                              controller.scrollToBottom();
+                              return MessageBubble(message: data);
+                            },
+                          ),
+                        ),
+                        isAILoading.value
+                            ? Padding(
+                          key: ValueKey(isAILoading.value),
+                          padding: EdgeInsets.only(left: 5.w, bottom: 5.h),
+                          child: Row(
+                            children: [
+                              Container(
+                                height: 32.w,
+                                width: 32.w,
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.all(5.r),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: white.withAlpha(180), width: 0.8.w),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100.r),
+                                  child: Image.asset(
+                                    'assets/images/splashlogo.png',
                                     height: 32.w,
                                     width: 32.w,
-                                    alignment: Alignment.center,
-                                    margin: EdgeInsets.all(5.r),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: white.withAlpha(180), width: 0.8.w),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(100.r),
-                                      child: Image.asset(
-                                        'assets/images/splashlogo.png',
-                                        height: 32.w,
-                                        width: 32.w,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                                    fit: BoxFit.cover,
                                   ),
-                                  SizedBox(width: 8),
-                                  TextWidget(
-                                      text: 'Guruji is Typing...', color: white, fontSize: 16.sp),
-                                ],
+                                ),
                               ),
-                            )
-                          : SizedBox.shrink(key: ValueKey(isAILoading.value))
-                    ],
-                  );
-                }),
-              ),
-            );
-          },
-        ));
+                              SizedBox(width: 8),
+                              TextWidget(
+                                  text: 'Guruji is Typing...', color: white, fontSize: 16.sp),
+                            ],
+                          ),
+                        )
+                            : SizedBox.shrink(key: ValueKey(isAILoading.value))
+                      ],
+                    );
+                  }),
+                ),
+              );
+            },
+          );
+        }));
   }
 }
 // Padding(

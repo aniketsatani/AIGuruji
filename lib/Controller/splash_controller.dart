@@ -24,6 +24,7 @@ class SplashController extends GetxController {
 
   @override
   void onInit() {
+    chatRoomId.value = uuid.v4();
     if (userId.isNotEmpty) {
       Api().getUser();
     }

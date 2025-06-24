@@ -11,17 +11,24 @@ class ChatroomController extends GetxController {
 
   final ScrollController scrollController = ScrollController();
 
+ // RxString chatRoomId = ''.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
   void fetchChatRoomsAndMessages() async {
     try {
       // Step 1: Get all chatRoom documents
       final chatRoomsSnapshot = await FirebaseFirestore.instance
           .collection('chatUser')
-          .doc(userId)
+          .doc('0B0ih1qX5chStCaM45uTZnFLTWP2')
           .collection('chatRoom')
           .get();
-      print('❌ No chat rooms found for user: $userId');
+      print('👉 chat rooms found for user: $userId');
 
-      print('✅ Total ChatRooms: ${chatRoomsSnapshot.docs}');
+      print('✅ Total ChatRooms: ${chatRoomsSnapshot.docs.length}');
       print('👉 ChatRoom IDs: ${chatRoomsSnapshot.docs.map((e) => e.id).toList()}');
 
       // Step 2: For each chatRoom, get the latest message
@@ -32,7 +39,7 @@ class ChatroomController extends GetxController {
 
         final messagesSnapshot = await FirebaseFirestore.instance
             .collection('chatUser')
-            .doc(userId)
+            .doc('0B0ih1qX5chStCaM45uTZnFLTWP2')
             .collection('chatRoom')
             .doc(chatRoomId)
             .collection('messages')
@@ -112,8 +119,4 @@ class ChatroomController extends GetxController {
     });
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 }
