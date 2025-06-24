@@ -30,78 +30,81 @@ class ChatRoomScreen extends StatelessWidget {
             Obx(() {
               return InkWell(
                 onTap: () {
-                  if (userId.isNotEmpty)
-                    Get.dialog(
-                      barrierDismissible: true,
-                      Dialog(
-                        backgroundColor: black.withValues(alpha: 0.9),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.r),
-                            side: BorderSide(width: 0.5.w, color: purpleShad)),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 100.w,
-                                width: 100.w,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: white, width: 0.6.w),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100.r),
-                                  child: ImageView(
-                                      imageUrl: image.value, height: height, width: width),
-                                ),
-                              ),
-                              heightBox(20),
-                              TextWidget(text: name.value, fontSize: 24.sp, fontFamily: 'B'),
-                              heightBox(10),
-                              TextWidget(
-                                  text: email.value,
-                                  fontSize: 18.sp,
-                                  maxLines: 2,
-                                  textAlign: TextAlign.center),
-                              heightBox(30),
-                              InkWell(
-                                onTap: () {
-                                  box.erase();
-                                  googleSignIn.signOut();
-                                  Get.offAll(
-                                    () => LoginScreen(),
-                                    transition: Transition.fadeIn,
-                                    duration: Duration(milliseconds: 500),
-                                  );
-                                },
-                                child: Container(
-                                  height: 50.h,
-                                  margin: EdgeInsets.symmetric(horizontal: 30.w),
-                                  width: width,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.r),
-                                    color: transparent,
-                                    border: Border.all(
-                                      color: purpleShad,
-                                      width: 0.5.w,
-                                    ),
-                                  ),
-                                  child: TextWidget(
-                                      text: 'Log out',
-                                      fontFamily: 'S',
-                                      fontSize: 17.sp,
-                                      color: purpleShad),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
+
+                  controller.fetchChatRoomsAndMessages();
+
+                  // if (userId.isNotEmpty)
+                  //   Get.dialog(
+                  //     barrierDismissible: true,
+                  //     Dialog(
+                  //       backgroundColor: black.withValues(alpha: 0.9),
+                  //       shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(20.r),
+                  //           side: BorderSide(width: 0.5.w, color: purpleShad)),
+                  //       child: Padding(
+                  //         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
+                  //         child: Column(
+                  //           mainAxisSize: MainAxisSize.min,
+                  //           crossAxisAlignment: CrossAxisAlignment.center,
+                  //           children: [
+                  //             Container(
+                  //               height: 100.w,
+                  //               width: 100.w,
+                  //               alignment: Alignment.center,
+                  //               decoration: BoxDecoration(
+                  //                 shape: BoxShape.circle,
+                  //                 border: Border.all(color: white, width: 0.6.w),
+                  //               ),
+                  //               child: ClipRRect(
+                  //                 borderRadius: BorderRadius.circular(100.r),
+                  //                 child: ImageView(
+                  //                     imageUrl: image.value, height: height, width: width),
+                  //               ),
+                  //             ),
+                  //             heightBox(20),
+                  //             TextWidget(text: name.value, fontSize: 24.sp, fontFamily: 'B'),
+                  //             heightBox(10),
+                  //             TextWidget(
+                  //                 text: email.value,
+                  //                 fontSize: 18.sp,
+                  //                 maxLines: 2,
+                  //                 textAlign: TextAlign.center),
+                  //             heightBox(30),
+                  //             InkWell(
+                  //               onTap: () {
+                  //                 box.erase();
+                  //                 googleSignIn.signOut();
+                  //                 Get.offAll(
+                  //                   () => LoginScreen(),
+                  //                   transition: Transition.fadeIn,
+                  //                   duration: Duration(milliseconds: 500),
+                  //                 );
+                  //               },
+                  //               child: Container(
+                  //                 height: 50.h,
+                  //                 margin: EdgeInsets.symmetric(horizontal: 30.w),
+                  //                 width: width,
+                  //                 alignment: Alignment.center,
+                  //                 decoration: BoxDecoration(
+                  //                   borderRadius: BorderRadius.circular(15.r),
+                  //                   color: transparent,
+                  //                   border: Border.all(
+                  //                     color: purpleShad,
+                  //                     width: 0.5.w,
+                  //                   ),
+                  //                 ),
+                  //                 child: TextWidget(
+                  //                     text: 'Log out',
+                  //                     fontFamily: 'S',
+                  //                     fontSize: 17.sp,
+                  //                     color: purpleShad),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   );
                 },
                 child: Container(
                   height: 35.w,
@@ -158,7 +161,7 @@ class ChatRoomScreen extends StatelessWidget {
                         onTap: () {
                           final text = controller.textController.text.trim();
                           if (text.isNotEmpty) {
-                            controller.sendMessage(userId: userId, chatroomId: '67890', text: text);
+                            controller.sendMessage(userId: userId, chatroomId: 'abcd123456', text: text);
                             controller.textController.clear();
                           }
                         },
@@ -202,12 +205,12 @@ class ChatRoomScreen extends StatelessWidget {
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('chat')
+              .collection('chatUser')
               .doc(userId)
               .collection('chatRoom')
-              .doc('67890')
-              .collection('message')
-              .orderBy('timestamp')
+              .doc('abcd123456')
+              .collection('messages')
+              .orderBy('time')
               .snapshots(),
           builder: (context, snapshot) {
             // LOADING STATE
