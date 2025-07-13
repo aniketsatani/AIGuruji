@@ -63,7 +63,7 @@ class SpeechController extends GetxController {
     showResponse.value = false;
     recognizedText.value = '';
     response.value = '';
-    centerText.value = 'I am listening';
+    centerText.value = 'I\'m listening.....';
 
     await speech.listen(
       onResult: (result) {
@@ -107,10 +107,10 @@ class SpeechController extends GetxController {
 
     isLoading.value = true;
     isProcessing.value = true;
-    centerText.value = 'Processing...';
+    centerText.value = 'Thinking.....';
 
     try {
-      await Future.delayed(Duration(seconds: 2)); // Simulated delay
+      await Future.delayed(Duration(seconds: 4)); // Simulated delay
 
       String generatedResponse = _generateSmartResponse(spokenText);
       response.value = generatedResponse;
