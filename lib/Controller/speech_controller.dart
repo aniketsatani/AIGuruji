@@ -12,7 +12,6 @@ class SpeechController extends GetxController {
   RxString recognizedText = ''.obs;
   RxString response = ''.obs;
   RxBool isLoading = false.obs;
-  RxDouble confidence = 0.0.obs;
 
   // New variables for enhanced functionality
   RxBool isProcessing = false.obs;
@@ -77,22 +76,20 @@ class SpeechController extends GetxController {
 
   // Start listening for speech
   Future<void> startListening() async {
-    if (!isAvailable.value) {
-      await initializeSpeech();
-      if (!isAvailable.value) return;
-    }
+    // if (!isAvailable.value) {
+    //   await initializeSpeech();
+    //   if (!isAvailable.value) return;
+    // }
 
     // Hide response display when starting new listening
     showResponse.value = false;
     recognizedText.value = '';
     response.value = '';
-    confidence.value = 0.0;
     centerText.value = 'I am listening';
 
     await speech.listen(
       onResult: (result) {
         recognizedText.value = result.recognizedWords;
-        confidence.value = result.confidence;
 
         // Update center text when user is speaking
         if (result.recognizedWords.isNotEmpty) {
@@ -105,7 +102,7 @@ class SpeechController extends GetxController {
         }
       },
       listenFor: Duration(seconds: 30),
-      pauseFor: Duration(seconds: 3),
+      pauseFor: Duration(seconds: 5),
       listenOptions: SpeechListenOptions(
           listenMode: ListenMode.confirmation,
           partialResults: true
@@ -218,7 +215,6 @@ class SpeechController extends GetxController {
   void clearData() {
     recognizedText.value = '';
     response.value = '';
-    confidence.value = 0.0;
     showResponse.value = false;
     centerText.value = 'What can I help you with?';  // Changed this line
   }
