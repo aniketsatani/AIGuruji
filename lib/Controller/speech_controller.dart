@@ -10,9 +10,8 @@ class SpeechController extends GetxController {
   RxString recognizedText = ''.obs;
   RxString response = ''.obs;
   RxBool isLoading = false.obs;
-
   RxBool isProcessing = false.obs;
-  RxString centerText = 'What can I help you with?'.obs;  // Changed initial text
+  RxString centerText = 'What can I help you with?'.obs;
   RxBool showResponse = false.obs;
 
   @override
@@ -27,22 +26,40 @@ class SpeechController extends GetxController {
 
       if (status == PermissionStatus.granted) {
         isAvailable.value = await speech.initialize(
+          onStatus: (status) {
+            if (status == 'notListening') {
+              isListening.value = false;
+              showResponse.value = false;
+              // Only reset if not processing or responding
+              print('hello status --- $status');
+              print('hello showResponse.value --- ${showResponse.value}');
+              if (showResponse.value == false) {
+                centerText.value = 'Tap to start listening';
+              }
+            }
+          },
+          onError: (error) {
+            print('Speech error: $error');
+            isListening.value = false;
+            centerText.value = 'Tap to start listening';
+          },
         );
+
         if (isAvailable.value) {
           centerText.value = 'What can I help you with?';
-
         }
+      } else {
+        centerText.value = 'Microphone permission denied';
       }
     } catch (e) {
       print('Error initializing speech: $e');
       isAvailable.value = false;
-      centerText.value = 'Error occurred';
+      centerText.value = 'Error occurred Catch';
     }
   }
 
-  // Start listening for speech
   Future<void> startListening() async {
-
+    await initializeSpeech();
     showResponse.value = false;
     recognizedText.value = '';
     response.value = '';
@@ -52,37 +69,39 @@ class SpeechController extends GetxController {
       onResult: (result) {
         recognizedText.value = result.recognizedWords;
 
-        // Update center text when user is speaking
         if (result.recognizedWords.isNotEmpty) {
           centerText.value = result.recognizedWords;
         }
 
-        // If speech is final, automatically generate response
         if (result.finalResult) {
+          isListening.value = false;
           generateResponse(result.recognizedWords);
         }
       },
       listenFor: Duration(seconds: 30),
       pauseFor: Duration(seconds: 5),
       listenOptions: SpeechListenOptions(
-          listenMode: ListenMode.confirmation,
-          partialResults: true
+        listenMode: ListenMode.confirmation,
+        partialResults: true,
       ),
       localeId: 'en_US',
+      onDevice: true,
+      cancelOnError: true,
     );
 
     isListening.value = true;
   }
 
-  // Stop listening
   Future<void> stopListening() async {
     await speech.stop();
     isListening.value = false;
-    centerText.value = 'Tap to start listening';  // Changed this line
 
+    // If no response, reset center text
+    if (!showResponse.value) {
+      centerText.value = 'Tap to start listening';
+    }
   }
 
-  // Generate response based on recognized speech
   Future<void> generateResponse(String spokenText) async {
     if (spokenText.trim().isEmpty) return;
 
@@ -91,23 +110,22 @@ class SpeechController extends GetxController {
     centerText.value = 'Processing...';
 
     try {
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 2)); // Simulated delay
 
       String generatedResponse = _generateSmartResponse(spokenText);
       response.value = generatedResponse;
 
       showResponse.value = true;
       centerText.value = 'Talk to interrupt';
-
     } catch (e) {
       centerText.value = 'Error occurred';
     } finally {
       isLoading.value = false;
       isProcessing.value = false;
+      isListening.value = false;
     }
   }
 
-  // Simple response generation logic
   String _generateSmartResponse(String input) {
     String lowerInput = input.toLowerCase();
 
@@ -130,7 +148,6 @@ class SpeechController extends GetxController {
     }
   }
 
-  // Clear all data
   void clearData() {
     recognizedText.value = '';
     response.value = '';

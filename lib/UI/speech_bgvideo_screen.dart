@@ -16,12 +16,16 @@ class _VideoBackgroundState extends State<VideoBackground> {
     // Replace with your video asset path
     _controller = VideoPlayerController.asset('assets/videos/speechbgvideo.mp4')
       ..initialize().then((_) {
-        setState(() {
-
-        });
+        setState(() {});
         _controller.play();
         _controller.setLooping(true);
       });
+
+    _controller.addListener(() {
+      if (!_controller.value.isPlaying && _controller.value.isInitialized) {
+        _controller.play(); // Resume if auto-paused by system
+      }
+    });
   }
 
   @override

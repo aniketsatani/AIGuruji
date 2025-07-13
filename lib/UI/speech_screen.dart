@@ -1,6 +1,9 @@
+import 'package:aiguruji/Constant/colors.dart';
+import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Controller/speech_controller.dart';
 import 'package:aiguruji/UI/speech_bgvideo_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class SpeechScreen extends StatelessWidget {
@@ -18,18 +21,25 @@ class SpeechScreen extends StatelessWidget {
           // Main Content
           Column(
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.clear, color: Colors.white, size: 28),
-                      onPressed: () {
-                        Get.back();
-                      },
+              Align(
+                alignment: Alignment.topLeft,
+                child: InkWell(
+                  onTap: (){
+                    Get.back();
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(top: 40.h,left: 15.w),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: black.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: white.withValues(alpha: 0.7),
+                        width: 1.w,
+                      ),
                     ),
-                  ],
+                    child: Icon(Icons.arrow_back, color: white, size: 20),
+                  ),
                 ),
               ),
 
@@ -37,12 +47,14 @@ class SpeechScreen extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: // Center Text or Response
-                      Obx(() => AnimatedSwitcher(
-                            duration: Duration(milliseconds: 300),
-                            child: controller.showResponse.value
-                                ? ResponseDisplay()
-                                : CenterTextDisplay(),
-                          )),
+                      Obx(() {
+                    print('hello shoeREsponse ----- ${controller.showResponse.value}');
+                    return AnimatedSwitcher(
+                      duration: Duration(milliseconds: 300),
+                      child:
+                          controller.showResponse.value ? ResponseDisplay() : CenterTextDisplay(),
+                    );
+                  }),
                 ),
               ),
 
@@ -55,23 +67,24 @@ class SpeechScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-
                         // Main Control Button
                         Obx(() => FloatingActionButton.extended(
                               onPressed: controller.isAvailable.value
                                   ? (controller.isListening.value
                                       ? controller.startListening
-                                      :
-                              controller.startListening)
+                                      : controller.startListening)
                                   : null,
-                              backgroundColor: _getButtonColor().withOpacity(0.8),
+                              backgroundColor: black.withValues(alpha: 0.3),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.r),
+                                  side: BorderSide(color: white, width: 1.w)),
                               icon: Icon(
-                                _getButtonIcon(),
-                                color: Colors.white,
+                                Icons.mic,
+                                color: white,
                               ),
-                              label: Text(
-                                _getButtonText(),
-                                style: TextStyle(color: Colors.white),
+                              label: TextWidget(
+                                text:'Start to Speak',
+                               color: white,fontWeight: FontWeight.w600,
                               ),
                             )),
                       ],
@@ -87,23 +100,19 @@ class SpeechScreen extends StatelessWidget {
   }
 
   Widget CenterTextDisplay() {
-    return Text(
-      controller.centerText.value,
-      key: ValueKey('center_text'),
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-        fontWeight: FontWeight.w500,
-        shadows: [
-          Shadow(
-            offset: Offset(1, 1),
-            blurRadius: 3,
-            color: Colors.black.withOpacity(0.7),
-          ),
-        ],
-      ),
-      textAlign: TextAlign.center,
-    );
+    return Obx(() {
+      controller.centerText.value;
+      print('center text ---- ${controller.centerText.value}');
+
+      return TextWidget(
+        text: controller.centerText.value,
+        key: ValueKey('center_text'),
+        color: white,
+        fontSize: 20.sp,
+        fontWeight: FontWeight.bold,
+        textAlign: TextAlign.center,
+      );
+    });
   }
 
   Widget ResponseDisplay() {
@@ -114,48 +123,28 @@ class SpeechScreen extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(15),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: Colors.white.withOpacity(0.3),
-              width: 1,
+              color: white.withValues(alpha: 0.3),
+              width: 1.w,
             ),
           ),
-          child: Text(
-            controller.response.value,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
+          child: TextWidget(
+            text: controller.response.value,
+            color: white,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 15),
-        Text(
-          'Talk to interrupt',
-          style: TextStyle(
-            color: Colors.white70,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          ),
+        TextWidget(
+          text: 'Talk to interrupt',
+          color: white,
+          fontSize: 15.sp,
+          fontWeight: FontWeight.w500,
         ),
       ],
     );
-  }
-
-  Color _getButtonColor() {
-   // if (controller.isListening.value) return Colors.red;
-    return Colors.blue;
-  }
-
-  IconData _getButtonIcon() {
-    //if (controller.isListening.value) return Icons.stop;
-    return Icons.mic;
-  }
-
-  String _getButtonText() {
-   // if (controller.isListening.value) return 'Stop';
-    return 'Start';
   }
 }
