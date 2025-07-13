@@ -1,19 +1,16 @@
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class SpeechController extends GetxController {
   final SpeechToText speech = SpeechToText();
 
-  // Observable variables (keeping your original ones + new ones)
   RxBool isListening = false.obs;
   RxBool isAvailable = false.obs;
   RxString recognizedText = ''.obs;
   RxString response = ''.obs;
   RxBool isLoading = false.obs;
 
-  // New variables for enhanced functionality
   RxBool isProcessing = false.obs;
   RxString centerText = 'What can I help you with?'.obs;  // Changed initial text
   RxBool showResponse = false.obs;
@@ -24,48 +21,17 @@ class SpeechController extends GetxController {
     initializeSpeech();
   }
 
-  // Initialize speech recognition
   Future<void> initializeSpeech() async {
     try {
-      // Request microphone permission
       PermissionStatus status = await Permission.microphone.request();
 
       if (status == PermissionStatus.granted) {
-        bool available = await speech.initialize(
-          onStatus: (status) {
-            print('Speech status: $status');
-            if (status == 'done' || status == 'notListening') {
-              if (isListening.value) {
-                stopListening();
-              }
-            }
-          },
-          onError: (error) {
-            print('Speech error: $error');
-            stopListening();
-            centerText.value = 'Error occurred';
-            Get.snackbar(
-              'Error',
-              'Speech recognition error: ${error.errorMsg}',
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          },
+        isAvailable.value = await speech.initialize(
         );
-        isAvailable.value = available;
-        if (available) {
-          centerText.value = 'What can I help you with?';  // Changed this line
-          // REMOVED: Auto start listening when initialized
-          // Future.delayed(Duration(milliseconds: 500), () {
-          //   startListening();
-          // });
+        if (isAvailable.value) {
+          centerText.value = 'What can I help you with?';
+
         }
-      } else {
-        centerText.value = 'Permission needed';
-        Get.snackbar(
-          'Permission Denied',
-          'Microphone permission is required for speech recognition',
-          snackPosition: SnackPosition.BOTTOM,
-        );
       }
     } catch (e) {
       print('Error initializing speech: $e');
@@ -76,12 +42,7 @@ class SpeechController extends GetxController {
 
   // Start listening for speech
   Future<void> startListening() async {
-    // if (!isAvailable.value) {
-    //   await initializeSpeech();
-    //   if (!isAvailable.value) return;
-    // }
 
-    // Hide response display when starting new listening
     showResponse.value = false;
     recognizedText.value = '';
     response.value = '';
@@ -117,9 +78,8 @@ class SpeechController extends GetxController {
   Future<void> stopListening() async {
     await speech.stop();
     isListening.value = false;
-    if (!isProcessing.value && !showResponse.value) {
-      centerText.value = 'What can I help you with?';  // Changed this line
-    }
+    centerText.value = 'Tap to start listening';  // Changed this line
+
   }
 
   // Generate response based on recognized speech
@@ -131,60 +91,19 @@ class SpeechController extends GetxController {
     centerText.value = 'Processing...';
 
     try {
-      // Simulate API call delay
       await Future.delayed(Duration(seconds: 2));
 
-      // Generate response based on recognized text
       String generatedResponse = _generateSmartResponse(spokenText);
       response.value = generatedResponse;
 
-      // Show response for 5 seconds
       showResponse.value = true;
       centerText.value = 'Talk to interrupt';
 
-      // // Auto return to listening after 5 seconds
-      // Future.delayed(Duration(seconds: 5), () {
-      //   if (showResponse.value) {
-      //     showResponse.value = false;
-      //     centerText.value = 'Tap to start listening';  // Changed this line
-      //     // REMOVED: Auto start listening again
-      //     // Future.delayed(Duration(milliseconds: 500), () {
-      //     //   startListening();
-      //     // });
-      //   }
-      // });
-
-      Get.snackbar(
-        'Response Generated',
-        'Response generated successfully!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green.withOpacity(0.8),
-        colorText: Colors.white,
-        duration: Duration(seconds: 2),
-      );
-
     } catch (e) {
       centerText.value = 'Error occurred';
-      Get.snackbar(
-        'Error',
-        'Failed to generate response: $e',
-        snackPosition: SnackPosition.BOTTOM,
-      );
     } finally {
       isLoading.value = false;
       isProcessing.value = false;
-    }
-  }
-
-  // Interrupt response display and return to listening
-  void interruptResponse() {
-    if (showResponse.value) {
-      showResponse.value = false;
-      centerText.value = 'What can I help you with?';  // Changed this line
-      // REMOVED: Start listening again automatically
-      // Future.delayed(Duration(milliseconds: 300), () {
-      //   startListening();
-      // });
     }
   }
 
@@ -216,7 +135,7 @@ class SpeechController extends GetxController {
     recognizedText.value = '';
     response.value = '';
     showResponse.value = false;
-    centerText.value = 'What can I help you with?';  // Changed this line
+    centerText.value = 'What can I help you with?';
   }
 
   @override
