@@ -1,4 +1,5 @@
 import 'package:aiguruji/Controller/speech_controller.dart';
+import 'package:aiguruji/UI/speech_bgvideo_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,234 +9,153 @@ class SpeechScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Voice Assistant'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.clear),
-            onPressed: controller.clearData,
-            tooltip: 'Clear',
-          ),
-        ],
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade50, Colors.white],
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Video Background
+          VideoBackground(),
+
+          // Main Content
+          Column(
             children: [
-              // Status Card
-              Card(
-                elevation: 4,
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Obx(() => Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                controller.isAvailable.value ? Icons.mic : Icons.mic_off,
-                                color: controller.isAvailable.value ? Colors.green : Colors.red,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                controller.isAvailable.value
-                                    ? 'Ready to listen'
-                                    : 'Speech not available',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: controller.isAvailable.value ? Colors.green : Colors.red,
-                                ),
-                              ),
-                            ],
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.clear, color: Colors.white, size: 28),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              // Center Display Area
+              Expanded(
+                child: Center(
+                  child: // Center Text or Response
+                      Obx(() => AnimatedSwitcher(
+                            duration: Duration(milliseconds: 300),
+                            child: controller.showResponse.value
+                                ? ResponseDisplay()
+                                : CenterTextDisplay(),
                           )),
-                      SizedBox(height: 8),
-                      Obx(() => controller.confidence.value > 0
-                          ? Text(
-                              'Confidence: ${(controller.confidence.value * 100).toStringAsFixed(1)}%',
-                              style: TextStyle(color: Colors.grey[600]),
-                            )
-                          : SizedBox.shrink()),
-                    ],
-                  ),
                 ),
               ),
 
-              SizedBox(height: 20),
-
-              // Speech Input Section
-              Expanded(
-                child: Card(
-                  elevation: 4,
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              // Bottom Control Area
+              Container(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    // Control Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.record_voice_over, color: Colors.blue),
-                            SizedBox(width: 8),
-                            Text(
-                              'Your Speech:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+
+                        // Main Control Button
+                        Obx(() => FloatingActionButton.extended(
+                              onPressed: controller.isAvailable.value
+                                  ? (controller.isListening.value
+                                      ? controller.startListening
+                                      :
+                              controller.startListening)
+                                  : null,
+                              backgroundColor: _getButtonColor().withOpacity(0.8),
+                              icon: Icon(
+                                _getButtonIcon(),
+                                color: Colors.white,
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12),
-                        Expanded(
-                          child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey[300]!),
-                            ),
-                            padding: EdgeInsets.all(12),
-                            child: Obx(() => SingleChildScrollView(
-                                  child: Text(
-                                    controller.recognizedText.value.isEmpty
-                                        ? 'Tap the microphone button to start speaking...'
-                                        : controller.recognizedText.value,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: controller.recognizedText.value.isEmpty
-                                          ? Colors.grey[600]
-                                          : Colors.black,
-                                    ),
-                                  ),
-                                )),
-                          ),
-                        ),
+                              label: Text(
+                                _getButtonText(),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )),
                       ],
                     ),
-                  ),
+                  ],
                 ),
-              ),
-
-              SizedBox(height: 20),
-
-              // Response Section
-              Expanded(
-                child: Card(
-                  elevation: 4,
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.chat_bubble_outline, color: Colors.green),
-                            SizedBox(width: 8),
-                            Text(
-                              'Response:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12),
-                        Expanded(
-                          child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.green[200]!),
-                            ),
-                            padding: EdgeInsets.all(12),
-                            child: Obx(() => controller.isLoading.value
-                                ? Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        CircularProgressIndicator(
-                                          color: Colors.green,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Generating response...',
-                                          style: TextStyle(color: Colors.green[700]),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : SingleChildScrollView(
-                                    child: Text(
-                                      controller.response.value.isEmpty
-                                          ? 'Response will appear here after you speak...'
-                                          : controller.response.value,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: controller.response.value.isEmpty
-                                            ? Colors.grey[600]
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                  )),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 20),
-
-              // Control Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Start/Stop Button
-                  Obx(() => FloatingActionButton.extended(
-                        onPressed: controller.isAvailable.value
-                            ? (controller.isListening.value
-                                ? controller.stopListening
-                                : controller.startListening)
-                            : null,
-                        backgroundColor: controller.isListening.value ? Colors.red : Colors.blue,
-                        icon: Icon(
-                          controller.isListening.value ? Icons.stop : Icons.mic,
-                          color: Colors.white,
-                        ),
-                        label: Text(
-                          controller.isListening.value ? 'Stop' : 'Start',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )),
-
-                  // Clear Button
-                  FloatingActionButton.extended(
-                    onPressed: controller.clearData,
-                    backgroundColor: Colors.grey,
-                    icon: Icon(Icons.clear, color: Colors.white),
-                    label: Text(
-                      'Clear',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
+  }
+
+  Widget CenterTextDisplay() {
+    return Text(
+      controller.centerText.value,
+      key: ValueKey('center_text'),
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+        shadows: [
+          Shadow(
+            offset: Offset(1, 1),
+            blurRadius: 3,
+            color: Colors.black.withOpacity(0.7),
+          ),
+        ],
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget ResponseDisplay() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      key: ValueKey('response_display'),
+      children: [
+        Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            controller.response.value,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        SizedBox(height: 15),
+        Text(
+          'Talk to interrupt',
+          style: TextStyle(
+            color: Colors.white70,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getButtonColor() {
+   // if (controller.isListening.value) return Colors.red;
+    return Colors.blue;
+  }
+
+  IconData _getButtonIcon() {
+    //if (controller.isListening.value) return Icons.stop;
+    return Icons.mic;
+  }
+
+  String _getButtonText() {
+   // if (controller.isListening.value) return 'Stop';
+    return 'Start';
   }
 }
