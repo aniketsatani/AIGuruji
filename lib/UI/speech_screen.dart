@@ -24,11 +24,11 @@ class SpeechScreen extends StatelessWidget {
               Align(
                 alignment: Alignment.topLeft,
                 child: InkWell(
-                  onTap: (){
+                  onTap: () {
                     Get.back();
                   },
                   child: Container(
-                    margin: EdgeInsets.only(top: 40.h,left: 15.w),
+                    margin: EdgeInsets.only(top: 40.h, left: 15.w),
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: black.withValues(alpha: 0.2),
@@ -45,16 +45,20 @@ class SpeechScreen extends StatelessWidget {
 
               // Center Display Area
               Expanded(
-                child: Center(
-                  child: // Center Text or Response
-                      Obx(() {
-                    print('hello shoeREsponse ----- ${controller.showResponse.value}');
-                    return AnimatedSwitcher(
-                      duration: Duration(milliseconds: 300),
-                      child:
-                          controller.showResponse.value ? ResponseDisplay() : CenterTextDisplay(),
-                    );
-                  }),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Center(
+                    child: // Center Text or Response
+                        Obx(() {
+                          controller.isRefresh.value;
+                          controller.centerText.value;
+                      return AnimatedSwitcher(
+                        duration: Duration(milliseconds: 300),
+                        child:
+                            controller.showResponse.value ? ResponseDisplay() : CenterTextDisplay(),
+                      );
+                    }),
+                  ),
                 ),
               ),
 
@@ -71,7 +75,7 @@ class SpeechScreen extends StatelessWidget {
                         Obx(() => FloatingActionButton.extended(
                               onPressed: controller.isAvailable.value
                                   ? (controller.isListening.value
-                                      ? controller.startListening
+                                      ? null
                                       : controller.startListening)
                                   : null,
                               backgroundColor: black.withValues(alpha: 0.3),
@@ -83,8 +87,9 @@ class SpeechScreen extends StatelessWidget {
                                 color: white,
                               ),
                               label: TextWidget(
-                                text:'Start to Speak',
-                               color: white,fontWeight: FontWeight.w600,
+                                text: controller.isListening.value ? 'Listening' : 'Start to Speak',
+                                color: white,
+                                fontWeight: FontWeight.w600,
                               ),
                             )),
                       ],
@@ -100,25 +105,20 @@ class SpeechScreen extends StatelessWidget {
   }
 
   Widget CenterTextDisplay() {
-    return Obx(() {
-      controller.centerText.value;
-      print('center text ---- ${controller.centerText.value}');
-
-      return TextWidget(
-        text: controller.centerText.value,
-        key: ValueKey('center_text'),
-        color: white,
-        fontSize: 20.sp,
-        fontWeight: FontWeight.bold,
-        textAlign: TextAlign.center,
-      );
-    });
+    return TextWidget(
+      text: controller.centerText.value,
+      key: ValueKey(controller.centerText.value),
+      color: white,
+      fontSize: 20.sp,
+      fontWeight: FontWeight.bold,
+      textAlign: TextAlign.center,
+    );
   }
 
   Widget ResponseDisplay() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      key: ValueKey('response_display'),
+      key: ValueKey(controller.response.value),
       children: [
         Container(
           padding: EdgeInsets.all(15),

@@ -3,6 +3,7 @@ import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/Controller/chatroom_controller.dart';
 import 'package:aiguruji/UI/drawer_screen.dart';
+import 'package:aiguruji/UI/login_screen.dart';
 import 'package:aiguruji/UI/messagebubble_screen.dart';
 import 'package:aiguruji/UI/speech_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +20,7 @@ class ChatRoomScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
 
           title: TextWidget(text: 'AI Guruji', fontFamily: 'B', fontSize: 24.sp),
@@ -29,80 +30,79 @@ class ChatRoomScreen extends StatelessWidget {
             Obx(() {
               return InkWell(
                 onTap: () {
-                  controller.fetchChatRoomsAndMessages();
 
-                  // if (userId.isNotEmpty)
-                  //   Get.dialog(
-                  //     barrierDismissible: true,
-                  //     Dialog(
-                  //       backgroundColor: black.withValues(alpha: 0.9),
-                  //       shape: RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(20.r),
-                  //           side: BorderSide(width: 0.5.w, color: purpleShad)),
-                  //       child: Padding(
-                  //         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
-                  //         child: Column(
-                  //           mainAxisSize: MainAxisSize.min,
-                  //           crossAxisAlignment: CrossAxisAlignment.center,
-                  //           children: [
-                  //             Container(
-                  //               height: 100.w,
-                  //               width: 100.w,
-                  //               alignment: Alignment.center,
-                  //               decoration: BoxDecoration(
-                  //                 shape: BoxShape.circle,
-                  //                 border: Border.all(color: white, width: 0.6.w),
-                  //               ),
-                  //               child: ClipRRect(
-                  //                 borderRadius: BorderRadius.circular(100.r),
-                  //                 child: ImageView(
-                  //                     imageUrl: image.value, height: height, width: width),
-                  //               ),
-                  //             ),
-                  //             heightBox(20),
-                  //             TextWidget(text: name.value, fontSize: 24.sp, fontFamily: 'B'),
-                  //             heightBox(10),
-                  //             TextWidget(
-                  //                 text: email.value,
-                  //                 fontSize: 18.sp,
-                  //                 maxLines: 2,
-                  //                 textAlign: TextAlign.center),
-                  //             heightBox(30),
-                  //             InkWell(
-                  //               onTap: () {
-                  //                 box.erase();
-                  //                 googleSignIn.signOut();
-                  //                 Get.offAll(
-                  //                   () => LoginScreen(),
-                  //                   transition: Transition.fadeIn,
-                  //                   duration: Duration(milliseconds: 500),
-                  //                 );
-                  //               },
-                  //               child: Container(
-                  //                 height: 50.h,
-                  //                 margin: EdgeInsets.symmetric(horizontal: 30.w),
-                  //                 width: width,
-                  //                 alignment: Alignment.center,
-                  //                 decoration: BoxDecoration(
-                  //                   borderRadius: BorderRadius.circular(15.r),
-                  //                   color: transparent,
-                  //                   border: Border.all(
-                  //                     color: purpleShad,
-                  //                     width: 0.5.w,
-                  //                   ),
-                  //                 ),
-                  //                 child: TextWidget(
-                  //                     text: 'Log out',
-                  //                     fontFamily: 'S',
-                  //                     fontSize: 17.sp,
-                  //                     color: purpleShad),
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   );
+                  if (userId.isNotEmpty)
+                    Get.dialog(
+                      barrierDismissible: true,
+                      Dialog(
+                        backgroundColor: black.withValues(alpha: 0.9),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.r),
+                            side: BorderSide(width: 0.5.w, color: purpleShad)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 100.w,
+                                width: 100.w,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: white, width: 0.6.w),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100.r),
+                                  child: ImageView(
+                                      imageUrl: image.value, height: height, width: width),
+                                ),
+                              ),
+                              heightBox(20),
+                              TextWidget(text: name.value, fontSize: 24.sp, fontFamily: 'B'),
+                              heightBox(10),
+                              TextWidget(
+                                  text: email.value,
+                                  fontSize: 18.sp,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center),
+                              heightBox(30),
+                              InkWell(
+                                onTap: () {
+                                  box.erase();
+                                  googleSignIn.signOut();
+                                  Get.offAll(
+                                    () => LoginScreen(),
+                                    transition: Transition.fadeIn,
+                                    duration: Duration(milliseconds: 500),
+                                  );
+                                },
+                                child: Container(
+                                  height: 50.h,
+                                  margin: EdgeInsets.symmetric(horizontal: 30.w),
+                                  width: width,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15.r),
+                                    color: transparent,
+                                    border: Border.all(
+                                      color: purpleShad,
+                                      width: 0.5.w,
+                                    ),
+                                  ),
+                                  child: TextWidget(
+                                      text: 'Log out',
+                                      fontFamily: 'S',
+                                      fontSize: 17.sp,
+                                      color: purpleShad),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
                 },
                 child: Container(
                   height: 35.w,
@@ -162,6 +162,7 @@ class ChatRoomScreen extends StatelessWidget {
                         onTap: () {
                           final text = controller.textController.text.trim();
                           if (text.isNotEmpty) {
+                            FocusManager.instance.primaryFocus!.unfocus();
                             controller.sendMessage(
                                 userId: userId, chatroomId: chatRoomId.value, text: text);
                             controller.textController.clear();

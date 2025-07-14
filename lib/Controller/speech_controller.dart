@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class SpeechController extends GetxController {
@@ -13,6 +14,7 @@ class SpeechController extends GetxController {
   RxBool isProcessing = false.obs;
   RxString centerText = 'What can I help you with?'.obs;
   RxBool showResponse = false.obs;
+  RxBool isRefresh = false.obs;
 
   @override
   void onInit() {
@@ -22,34 +24,25 @@ class SpeechController extends GetxController {
 
   Future<void> initializeSpeech() async {
     try {
-      PermissionStatus status = await Permission.microphone.request();
-
-      if (status == PermissionStatus.granted) {
-        isAvailable.value = await speech.initialize(
-          onStatus: (status) {
-            if (status == 'notListening') {
-              isListening.value = false;
-              showResponse.value = false;
-              // Only reset if not processing or responding
-              print('hello status --- $status');
-              print('hello showResponse.value --- ${showResponse.value}');
-              if (showResponse.value == false) {
-                centerText.value = 'Tap to start listening';
-              }
-            }
-          },
-          onError: (error) {
-            print('Speech error: $error');
+      isAvailable.value = await speech.initialize(
+        onStatus: (status) {
+          if (status == 'notListening') {
             isListening.value = false;
-            centerText.value = 'Tap to start listening';
-          },
-        );
+            showResponse.value = false;
 
-        if (isAvailable.value) {
-          centerText.value = 'What can I help you with?';
-        }
-      } else {
-        centerText.value = 'Microphone permission denied';
+            print('hello status --- $status');
+            print('hello showResponse value --- ${showResponse.value}');
+            if (showResponse.value == false) {
+              centerText.value = 'Tap to start listening';
+              isRefresh.value = !isRefresh.value;
+            }
+          }
+        },
+        onError: errorListener
+      );
+
+      if (isAvailable.value) {
+        centerText.value = 'What can I help you with?';
       }
     } catch (e) {
       print('Error initializing speech: $e');
@@ -59,7 +52,7 @@ class SpeechController extends GetxController {
   }
 
   Future<void> startListening() async {
-    await initializeSpeech();
+    //await initializeSpeech();
     showResponse.value = false;
     recognizedText.value = '';
     response.value = '';
@@ -78,18 +71,29 @@ class SpeechController extends GetxController {
           generateResponse(result.recognizedWords);
         }
       },
-      listenFor: Duration(seconds: 30),
-      pauseFor: Duration(seconds: 5),
+      listenFor: Duration(seconds: 100),
+      pauseFor: Duration(seconds: 100),
       listenOptions: SpeechListenOptions(
-        listenMode: ListenMode.confirmation,
+        listenMode: ListenMode.dictation,cancelOnError: true,
         partialResults: true,
       ),
-      localeId: 'en_US',
-      onDevice: true,
-      cancelOnError: true,
     );
 
+    errorListener;
+
+
     isListening.value = true;
+  }
+
+  void errorListener(SpeechRecognitionError error) {
+    print('Speech error ------> ${error.errorMsg}');
+
+    isListening.value = false;
+    centerText.value = 'Tap to start listening';
+    isRefresh.value = !isRefresh.value;
+    print('Speech isRefresh ---> ${isRefresh.value}');
+
+
   }
 
   Future<void> stopListening() async {
@@ -116,7 +120,6 @@ class SpeechController extends GetxController {
       response.value = generatedResponse;
 
       showResponse.value = true;
-      centerText.value = 'Talk to interrupt';
     } catch (e) {
       centerText.value = 'Error occurred';
     } finally {
