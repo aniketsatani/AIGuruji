@@ -1,5 +1,6 @@
+import 'package:aiguruji/Constant/constant.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -10,8 +11,6 @@ class SpeechController extends GetxController {
   RxBool isAvailable = false.obs;
   RxString recognizedText = ''.obs;
   RxString response = ''.obs;
-  RxBool isLoading = false.obs;
-  RxBool isProcessing = false.obs;
   RxString centerText = 'What can I help you with?'.obs;
   RxBool showResponse = false.obs;
   RxBool isRefresh = false.obs;
@@ -29,9 +28,6 @@ class SpeechController extends GetxController {
           if (status == 'notListening') {
             isListening.value = false;
             showResponse.value = false;
-
-            print('hello status --- $status');
-            print('hello showResponse value --- ${showResponse.value}');
             if (showResponse.value == false) {
               centerText.value = 'Tap to start listening';
               isRefresh.value = !isRefresh.value;
@@ -86,14 +82,9 @@ class SpeechController extends GetxController {
   }
 
   void errorListener(SpeechRecognitionError error) {
-    print('Speech error ------> ${error.errorMsg}');
-
     isListening.value = false;
     centerText.value = 'Tap to start listening';
     isRefresh.value = !isRefresh.value;
-    print('Speech isRefresh ---> ${isRefresh.value}');
-
-
   }
 
   Future<void> stopListening() async {
@@ -109,8 +100,6 @@ class SpeechController extends GetxController {
   Future<void> generateResponse(String spokenText) async {
     if (spokenText.trim().isEmpty) return;
 
-    isLoading.value = true;
-    isProcessing.value = true;
     centerText.value = 'Thinking.....';
 
     try {
@@ -123,8 +112,6 @@ class SpeechController extends GetxController {
     } catch (e) {
       centerText.value = 'Error occurred';
     } finally {
-      isLoading.value = false;
-      isProcessing.value = false;
       isListening.value = false;
     }
   }
@@ -133,23 +120,46 @@ class SpeechController extends GetxController {
     String lowerInput = input.toLowerCase();
 
     if (lowerInput.contains('hello') || lowerInput.contains('hi')) {
-      return "Hello! How can I help you today?";
+      return "Hi there! How can I help?";
     } else if (lowerInput.contains('weather')) {
-      return "I can't check the weather right now, but you can use a weather app for current conditions.";
+      return "Check your weather app for updates.";
     } else if (lowerInput.contains('time')) {
-      return "The current time is ${DateTime.now().toString().substring(11, 16)}.";
+      return "It's ${DateFormat('hh:mm a').format(DateTime.now())} right now.";
     } else if (lowerInput.contains('how are you')) {
-      return "I'm doing well, thank you for asking! How are you?";
-    } else if (lowerInput.contains('what') && lowerInput.contains('name')) {
-      return "I'm your voice assistant! You can call me Assistant.";
+      return "I'm great! Hope you're doing well too.";
+    } else if (lowerInput.contains('your name')) {
+      return "I'm your smart assistant.";
     } else if (lowerInput.contains('help')) {
-      return "I'm here to help! You can ask me questions or have a conversation with me.";
+      return "Ask me anything. I'm here to help!";
     } else if (lowerInput.contains('thank you') || lowerInput.contains('thanks')) {
-      return "You're welcome! Is there anything else I can help you with?";
+      return "You're welcome! Happy to help.";
+    } else if (lowerInput.contains('joke')) {
+      return "Why did the tomato blush? It saw salad.";
+    } else if (lowerInput.contains('good morning')) {
+      return "Good morning! Have a great day.";
+    } else if (lowerInput.contains('good night')) {
+      return "Good night! Sweet dreams.";
+    } else if (lowerInput.contains('motivate') || lowerInput.contains('motivation')) {
+      return "Keep going, you're doing great!";
+    } else if (lowerInput.contains('remind') || lowerInput.contains('reminder')) {
+      return "Sorry, I can't set reminders yet.";
+    } else if (lowerInput.contains('tell me something')) {
+      return "Octopuses have three hearts!";
+    } else if (lowerInput.contains('who are you')) {
+      return "Just your AI buddy, always here.";
+    } else if (lowerInput.contains('i am sad') || lowerInput.contains('feeling down')) {
+      return "You're not alone. I'm here for you.";
+    } else if (lowerInput.contains('what should i eat')) {
+      return "Try something healthy and tasty!";
+    } else if (lowerInput.contains('music')) {
+      return "Open your music app and vibe!";
+    }else if (lowerInput.contains('my name')) {
+      return "Your name is ${name.value}. Nice to meet you 🤩";
     } else {
-      return "I heard you say: \"$input\". That's interesting! Tell me more about it.";
+      return "I heard: \"$input\". Tell me more!";
     }
   }
+
 
   void clearData() {
     recognizedText.value = '';
@@ -160,7 +170,7 @@ class SpeechController extends GetxController {
 
   @override
   void onClose() {
-    speech.stop();
+    speech.cancel();
     super.onClose();
   }
 }

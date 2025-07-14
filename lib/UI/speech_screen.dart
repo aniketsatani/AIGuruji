@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class SpeechScreen extends StatelessWidget {
-  final SpeechController controller = Get.put(SpeechController());
+  SpeechController controller = Get.put(SpeechController());
 
   @override
   Widget build(BuildContext context) {
