@@ -53,13 +53,19 @@ class SpeechController extends GetxController {
     await speech.listen(
       onResult: (result) {
         recognizedText.value = result.recognizedWords;
+        isLastResponse.value = true;
+
 
         if (result.recognizedWords.isNotEmpty) {
           centerText.value = result.recognizedWords;
         }
 
         if (result.finalResult) {
-          isListening.value = true;
+          isLastResponse.value = true;
+
+          isListening.value = false;
+          print('hello is isListening.value ERROR ---- ${isListening.value}');
+          print('hello is isLastResponse.value ERROR ---- ${isLastResponse.value}');
           generateResponse(result.recognizedWords);
         }
       },
@@ -80,14 +86,11 @@ class SpeechController extends GetxController {
   errorListener(SpeechRecognitionError error) {
     isListening.value = false;
     centerText.value = 'Tap to start listening';
+
   }
-
-
 
   Future<void> generateResponse(String spokenText) async {
     if (spokenText.trim().isEmpty) return;
-    isListening.value = false;
-    isLastResponse.value = true;
 
     centerText.value = 'Thinking.....';
 
@@ -101,8 +104,6 @@ class SpeechController extends GetxController {
       isLastResponse.value = false;
     } catch (e) {
       centerText.value = 'Error occurred';
-    } finally {
-      isListening.value = false;
     }
   }
 
@@ -154,6 +155,7 @@ class SpeechController extends GetxController {
     recognizedText.value = '';
     response.value = '';
     showResponse.value = false;
+    isListening.value = false;
     centerText.value = 'What can I help you with?';
   }
 

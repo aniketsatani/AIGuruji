@@ -106,7 +106,8 @@ class SpeechScreen extends StatelessWidget {
 
 // Mic Button Container
                         Obx(() {
-                          print('hello is obx isListening.value ---- ${isListening.value}');
+                          isListening.value;
+                          controller.isLastResponse.value;
                           return GestureDetector(
                             onTap: controller.isAvailable.value
                                 ? ((isListening.value || controller.isLastResponse.value)
@@ -129,7 +130,7 @@ class SpeechScreen extends StatelessWidget {
                                   ),
                                   widthBox(8.w),
                                   TextWidget(
-                                    text: (isListening.value || controller.isLastResponse.value)
+                                    text: (controller.isLastResponse.value || isListening.value)
                                         ? 'Listening'
                                         : 'Start to Speak',
                                     color: white,
