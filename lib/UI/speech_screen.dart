@@ -1,5 +1,6 @@
 import 'package:aiguruji/Constant/colors.dart';
 import 'package:aiguruji/Constant/common_widget.dart';
+import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/Controller/speech_controller.dart';
 import 'package:aiguruji/UI/speech_bgvideo_screen.dart';
 import 'package:flutter/material.dart';
@@ -50,9 +51,10 @@ class SpeechScreen extends StatelessWidget {
                   child: Center(
                     child: // Center Text or Response
                         Obx(() {
-                          controller.isRefresh.value;
-                          controller.centerText.value;
+                      centerText.value;
+                      print('hello center text obx --- ${centerText.value}');
                       return AnimatedSwitcher(
+                        key: ValueKey('${centerText.value}'),
                         duration: Duration(milliseconds: 300),
                         child:
                             controller.showResponse.value ? ResponseDisplay() : CenterTextDisplay(),
@@ -72,26 +74,73 @@ class SpeechScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // Main Control Button
-                        Obx(() => FloatingActionButton.extended(
-                              onPressed: controller.isAvailable.value
-                                  ? (controller.isListening.value
-                                      ? null
-                                      : controller.startListening)
-                                  : null,
-                              backgroundColor: black.withValues(alpha: 0.3),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.r),
-                                  side: BorderSide(color: white, width: 1.w)),
-                              icon: Icon(
-                                Icons.mic,
-                                color: white,
+
+                        // Close Button Container
+                        Obx(() {
+                          if (isListening.value == true) {
+                            return SizedBox.shrink();
+                          }
+                          return Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  controller.clearData();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                                  decoration: BoxDecoration(
+                                    color: black.withValues(alpha: 0.3),
+                                    borderRadius: BorderRadius.circular(25.r),
+                                    border: Border.all(color: white, width: 1.w),
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: white,
+                                  ),
+                                ),
                               ),
-                              label: TextWidget(
-                                text: controller.isListening.value ? 'Listening' : 'Start to Speak',
-                                color: white,
-                                fontWeight: FontWeight.w600,
+                              widthBox(15),
+                            ],
+                          );
+                        }),
+
+// Mic Button Container
+                        Obx(() {
+                          print('hello is obx isListening.value ---- ${isListening.value}');
+                          return GestureDetector(
+                            onTap: controller.isAvailable.value
+                                ? ((isListening.value || controller.isLastResponse.value)
+                                    ? null
+                                    : controller.startListening)
+                                : null,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                              decoration: BoxDecoration(
+                                color: black.withValues(alpha: 0.3),
+                                borderRadius: BorderRadius.circular(20.r),
+                                border: Border.all(color: white, width: 1.w),
                               ),
-                            )),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.mic,
+                                    color: white,
+                                  ),
+                                  widthBox(8.w),
+                                  TextWidget(
+                                    text: (isListening.value || controller.isLastResponse.value)
+                                        ? 'Listening'
+                                        : 'Start to Speak',
+                                    color: white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
                       ],
                     ),
                   ],
@@ -106,8 +155,7 @@ class SpeechScreen extends StatelessWidget {
 
   Widget CenterTextDisplay() {
     return TextWidget(
-      text: controller.centerText.value,
-      key: ValueKey(controller.centerText.value),
+      text: centerText.value,
       color: white,
       fontSize: 20.sp,
       fontWeight: FontWeight.bold,
@@ -123,7 +171,7 @@ class SpeechScreen extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(15),
           decoration: BoxDecoration(
-            color: white.withValues(alpha: 0.2),
+            color: black.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: white.withValues(alpha: 0.3),

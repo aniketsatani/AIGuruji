@@ -4,16 +4,17 @@ import 'package:intl/intl.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
+RxBool isListening = false.obs;
+RxString centerText = 'What can I help you with?'.obs;
+
 class SpeechController extends GetxController {
   final SpeechToText speech = SpeechToText();
 
-  RxBool isListening = false.obs;
   RxBool isAvailable = false.obs;
   RxString recognizedText = ''.obs;
   RxString response = ''.obs;
-  RxString centerText = 'What can I help you with?'.obs;
   RxBool showResponse = false.obs;
-  RxBool isRefresh = false.obs;
+  RxBool isLastResponse = false.obs;
 
   @override
   void onInit() {
@@ -24,18 +25,13 @@ class SpeechController extends GetxController {
   Future<void> initializeSpeech() async {
     try {
       isAvailable.value = await speech.initialize(
-        onStatus: (status) {
-          if (status == 'notListening') {
-            isListening.value = false;
-            showResponse.value = false;
-            if (showResponse.value == false) {
-              centerText.value = 'Tap to start listening';
-              isRefresh.value = !isRefresh.value;
+          onStatus: (status) {
+            if (status == 'notListening') {
+              isListening.value = false;
+              showResponse.value = false;
             }
-          }
-        },
-        onError: errorListener
-      );
+          },
+          onError: errorListener);
 
       if (isAvailable.value) {
         centerText.value = 'What can I help you with?';
@@ -63,42 +59,35 @@ class SpeechController extends GetxController {
         }
 
         if (result.finalResult) {
-          isListening.value = false;
+          isListening.value = true;
           generateResponse(result.recognizedWords);
         }
       },
       listenFor: Duration(seconds: 100),
       pauseFor: Duration(seconds: 100),
       listenOptions: SpeechListenOptions(
-        listenMode: ListenMode.dictation,cancelOnError: true,
+        listenMode: ListenMode.dictation,
+        cancelOnError: true,
         partialResults: true,
       ),
     );
+    isListening.value = true;
+    print('hello is isListening.value ERROR BEFORE ---- ${isListening.value}');
 
     errorListener;
-
-
-    isListening.value = true;
   }
 
-  void errorListener(SpeechRecognitionError error) {
+  errorListener(SpeechRecognitionError error) {
     isListening.value = false;
     centerText.value = 'Tap to start listening';
-    isRefresh.value = !isRefresh.value;
   }
 
-  Future<void> stopListening() async {
-    await speech.stop();
-    isListening.value = false;
 
-    // If no response, reset center text
-    if (!showResponse.value) {
-      centerText.value = 'Tap to start listening';
-    }
-  }
 
   Future<void> generateResponse(String spokenText) async {
     if (spokenText.trim().isEmpty) return;
+    isListening.value = false;
+    isLastResponse.value = true;
 
     centerText.value = 'Thinking.....';
 
@@ -109,6 +98,7 @@ class SpeechController extends GetxController {
       response.value = generatedResponse;
 
       showResponse.value = true;
+      isLastResponse.value = false;
     } catch (e) {
       centerText.value = 'Error occurred';
     } finally {
@@ -153,13 +143,12 @@ class SpeechController extends GetxController {
       return "Try something healthy and tasty!";
     } else if (lowerInput.contains('music')) {
       return "Open your music app and vibe!";
-    }else if (lowerInput.contains('my name')) {
+    } else if (lowerInput.contains('my name')) {
       return "Your name is ${name.value}. Nice to meet you 🤩";
     } else {
       return "I heard: \"$input\". Tell me more!";
     }
   }
-
 
   void clearData() {
     recognizedText.value = '';
