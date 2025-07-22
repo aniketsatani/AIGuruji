@@ -61,7 +61,6 @@ class ChatroomController extends GetxController {
   }
 
   Future<void> sendMessage({
-    required String userId,
     required String chatroomId,
     required String text,
   }) async {
@@ -82,7 +81,7 @@ class ChatroomController extends GetxController {
         'text': text,
         'time': DateTime.now(),
       });
-      final url = Uri.parse('https://d395-150-107-241-153.ngrok-free.app/text');
+      final url = Uri.parse('https://dd9d03d45551.ngrok-free.app/text');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json', 'X-API-Key': 'XCoderInfotechBaba'},

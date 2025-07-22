@@ -22,7 +22,6 @@ class ChatRoomScreen extends StatelessWidget {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-
           title: TextWidget(text: 'AI Guruji', fontFamily: 'B', fontSize: 24.sp),
           centerTitle: true,
           actionsPadding: EdgeInsets.only(right: 10.w),
@@ -30,7 +29,6 @@ class ChatRoomScreen extends StatelessWidget {
             Obx(() {
               return InkWell(
                 onTap: () {
-
                   if (userId.isNotEmpty)
                     Get.dialog(
                       barrierDismissible: true,
@@ -118,11 +116,11 @@ class ChatRoomScreen extends StatelessWidget {
                     child: image.value.isNotEmpty
                         ? ImageView(imageUrl: image.value, height: 33.h, width: 35.w)
                         : Image.asset(
-                      'assets/images/splashlogo.png',
-                      height: 35.w,
-                      width: 35.w,
-                      fit: BoxFit.cover,
-                    ),
+                            'assets/images/splashlogo.png',
+                            height: 35.w,
+                            width: 35.w,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
               );
@@ -131,10 +129,7 @@ class ChatRoomScreen extends StatelessWidget {
         ),
         drawer: CustomDrawer(),
         bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery
-              .of(context)
-              .viewInsets
-              .bottom),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
             height: 105.h,
             margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
@@ -163,8 +158,7 @@ class ChatRoomScreen extends StatelessWidget {
                           final text = controller.textController.text.trim();
                           if (text.isNotEmpty) {
                             FocusManager.instance.primaryFocus!.unfocus();
-                            controller.sendMessage(
-                                userId: userId, chatroomId: chatRoomId.value, text: text);
+                            controller.sendMessage(chatroomId: chatRoomId.value, text: text);
                             controller.textController.clear();
                           }
                         },
@@ -293,35 +287,36 @@ class ChatRoomScreen extends StatelessWidget {
                         ),
                         isAILoading.value
                             ? Padding(
-                          key: ValueKey(isAILoading.value),
-                          padding: EdgeInsets.only(left: 5.w, bottom: 5.h),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 32.w,
-                                width: 32.w,
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.all(5.r),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: white.withAlpha(180), width: 0.8.w),
+                                key: ValueKey(isAILoading.value),
+                                padding: EdgeInsets.only(left: 5.w, bottom: 5.h),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: 32.w,
+                                      width: 32.w,
+                                      alignment: Alignment.center,
+                                      margin: EdgeInsets.all(5.r),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border:
+                                            Border.all(color: white.withAlpha(180), width: 0.8.w),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(100.r),
+                                        child: Image.asset(
+                                          'assets/images/splashlogo.png',
+                                          height: 32.w,
+                                          width: 32.w,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    TextWidget(
+                                        text: 'Guruji is Typing...', color: white, fontSize: 16.sp),
+                                  ],
                                 ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100.r),
-                                  child: Image.asset(
-                                    'assets/images/splashlogo.png',
-                                    height: 32.w,
-                                    width: 32.w,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              TextWidget(
-                                  text: 'Guruji is Typing...', color: white, fontSize: 16.sp),
-                            ],
-                          ),
-                        )
+                              )
                             : SizedBox.shrink(key: ValueKey(isAILoading.value))
                       ],
                     );

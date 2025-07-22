@@ -32,7 +32,7 @@ class CustomDrawer extends StatelessWidget {
             child: SingleChildScrollView(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
-                    .collection('chatUser') // 👈 Make sure this is your actual path
+                    .collection('chats') // 👈 Make sure this is your actual path
                     .doc(userId)
                     .collection('chatRoom')
                     .snapshots(),
@@ -62,14 +62,14 @@ class CustomDrawer extends StatelessWidget {
 
                       return StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
-                            .collection('chatUser')
+                            .collection('chats')
                             .doc(userId)
                             .collection('chatRoom')
                             .doc(chatRoomId)
                             .collection(
                                 'messages') // 👈 collection name should match your structure
-                            .orderBy('time', descending: true)
-                            // .limit(1)
+                            .orderBy('time', descending: false)
+                             .limit(1)
                             .snapshots(),
                         builder: (context, messageSnapshot) {
                           String latestMessage = 'Loading...';

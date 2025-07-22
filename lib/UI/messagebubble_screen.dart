@@ -1,6 +1,5 @@
 import 'package:aiguruji/Constant/colors.dart';
 import 'package:aiguruji/Constant/common_widget.dart';
-import 'package:aiguruji/Constant/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -19,55 +18,59 @@ class MessageBubble extends StatelessWidget {
       mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!isUser)
-          Container(
-            height: 32.w,
-            width: 32.w,
-            alignment: Alignment.center,
-            margin: EdgeInsets.all(5.r),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: white.withValues(alpha: 0.7), width: 0.8.w),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(100.r),
-              child: Image.asset(
-                'assets/images/splashlogo.png',
-                height: 30.w,
-                width: 30.w,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+        // if (!isUser)
+        //   Container(
+        //     height: 32.w,
+        //     width: 32.w,
+        //     alignment: Alignment.center,
+        //     margin: EdgeInsets.all(5.r),
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       border: Border.all(color: white.withValues(alpha: 0.7), width: 0.8.w),
+        //     ),
+        //     child: ClipRRect(
+        //       borderRadius: BorderRadius.circular(100.r),
+        //       child: Image.asset(
+        //         'assets/images/splashlogo.png',
+        //         height: 30.w,
+        //         width: 30.w,
+        //         fit: BoxFit.cover,
+        //       ),
+        //     ),
+        //   ),
         // if (!isUser) SizedBox(width: 8.w),
         Flexible(
           child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 5.h),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
               margin: EdgeInsets.only(
                   left: isUser ? 70.w : 5.w, right: isUser ? 5.w : 70.w, top: 5.h, bottom: 5.h),
               decoration: BoxDecoration(
                 color: isUser ? Colors.blueAccent : Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12.r),
+                    topRight: Radius.circular(12.r),
+                    bottomLeft: !isUser ? Radius.zero : Radius.circular(12.r),
+                    bottomRight: isUser ? Radius.zero : Radius.circular(12.r)),
               ),
               child: isUser
-                  ? TextWidget(text: message['text'], color: white,fontSize: 17.sp,maxLines: null)
+                  ? TextWidget(text: message['text'], color: white, fontSize: 17.sp, maxLines: null)
                   : TextResponseWidget(text: message['response_text'])),
         ),
         // if (isUser) SizedBox(width: 8.w),
-        if (isUser)
-          Container(
-            height: 32.w,
-            width: 32.w,
-            alignment: Alignment.center,
-            margin: EdgeInsets.all(5.r),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: white.withValues(alpha: 0.7), width: 0.8.w),
-            ),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(100.r),
-                child: ImageView(imageUrl: image.value, height: 32.w, width: 32.w)),
-          ),
+        // if (isUser)
+        //   Container(
+        //     height: 32.w,
+        //     width: 32.w,
+        //     alignment: Alignment.center,
+        //     margin: EdgeInsets.all(5.r),
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       border: Border.all(color: white.withValues(alpha: 0.7), width: 0.8.w),
+        //     ),
+        //     child: ClipRRect(
+        //         borderRadius: BorderRadius.circular(100.r),
+        //         child: ImageView(imageUrl: image.value, height: 32.w, width: 32.w)),
+        //   ),
       ],
     );
   }
@@ -115,13 +118,15 @@ class TextResponseWidget extends StatelessWidget {
         // Apply bold styling
         spans.add(TextSpan(
           text: part.substring(2, part.length - 2), // Remove the ** markers
-          style: TextStyle(color: black, fontSize: 16.sp / MediaQuery.of(Get.context!).textScaler.scale(1)),
+          style: TextStyle(
+              color: black, fontSize: 16.sp / MediaQuery.of(Get.context!).textScaler.scale(1)),
         ));
       } else {
         // Regular text
         spans.add(TextSpan(
           text: part,
-          style: TextStyle(color: black, fontSize: 16.sp / MediaQuery.of(Get.context!).textScaler.scale(1)),
+          style: TextStyle(
+              color: black, fontSize: 16.sp / MediaQuery.of(Get.context!).textScaler.scale(1)),
         ));
       }
     }
