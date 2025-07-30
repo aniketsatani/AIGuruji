@@ -1,4 +1,3 @@
-import 'package:aiguruji/API/api.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/UI/chatroom_screen.dart';
 import 'package:aiguruji/UI/login_screen.dart';
@@ -24,10 +23,8 @@ class SplashController extends GetxController {
 
   @override
   void onInit() {
-    chatRoomId.value = uuid.v4();
-    if (userId.isNotEmpty) {
-      Api().getUser();
-    }
     super.onInit();
+    chatRoomId.value = uuid.v4();
+    isNewRoom.value = true;
   }
 }

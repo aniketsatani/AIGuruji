@@ -3,7 +3,6 @@ import 'package:aiguruji/Constant/common_widget.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/Controller/chatroom_controller.dart';
 import 'package:aiguruji/UI/drawer_screen.dart';
-import 'package:aiguruji/UI/login_screen.dart';
 import 'package:aiguruji/UI/messagebubble_screen.dart';
 import 'package:aiguruji/UI/speech_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -65,37 +64,6 @@ class ChatRoomScreen extends StatelessWidget {
                                   fontSize: 18.sp,
                                   maxLines: 2,
                                   textAlign: TextAlign.center),
-                              heightBox(30),
-                              InkWell(
-                                onTap: () {
-                                  box.erase();
-                                  googleSignIn.signOut();
-                                  Get.offAll(
-                                    () => LoginScreen(),
-                                    transition: Transition.fadeIn,
-                                    duration: Duration(milliseconds: 500),
-                                  );
-                                },
-                                child: Container(
-                                  height: 50.h,
-                                  margin: EdgeInsets.symmetric(horizontal: 30.w),
-                                  width: width,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.r),
-                                    color: transparent,
-                                    border: Border.all(
-                                      color: purpleShad,
-                                      width: 0.5.w,
-                                    ),
-                                  ),
-                                  child: TextWidget(
-                                      text: 'Log out',
-                                      fontFamily: 'S',
-                                      fontSize: 17.sp,
-                                      color: purpleShad),
-                                ),
-                              ),
                             ],
                           ),
                         ),
@@ -205,53 +173,45 @@ class ChatRoomScreen extends StatelessWidget {
           print('hello chatroom id obx --- ${chatRoomId.value}');
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
-                .collection('chatUser')
+                .collection('Chats')
                 .doc(userId)
                 .collection('chatRoom')
                 .doc(chatRoomId.value)
-                .collection('messages')
+                .collection('Messages')
                 .orderBy('time')
                 .snapshots(),
             builder: (context, snapshot) {
               // LOADING STATE
               if (!snapshot.hasData) {
                 return Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: height / 13),
-                    child: CircularProgressIndicator(color: white),
-                  ),
+                  child: CircularProgressIndicator(color: white),
                 );
               }
 
               // ERROR STATE
               if (snapshot.hasError) {
                 return Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: height / 20),
-                    child: TextWidget(
-                      text: 'Something went wrong!',
-                      fontSize: 20,
-                    ),
+                  child: TextWidget(
+                    text: 'Something went wrong!',
+                    fontSize: 20,
                   ),
                 );
               }
 
               // DATA STATE
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Padding(
-                  padding: EdgeInsets.only(top: height / 4),
-                  child: Center(
-                    child: Column(
-                      spacing: 10,
-                      children: [
-                        Image.asset('assets/images/splashlogo.png', height: 100.w, width: 100.w),
-                        TextWidget(
-                          text: 'What can I help you with?',
-                          fontSize: 20,
-                          fontFamily: 'B',
-                        ),
-                      ],
-                    ),
+                return Center(
+                  child: Column(
+                    spacing: 10,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/splashlogo.png', height: 100.w, width: 100.w),
+                      TextWidget(
+                        text: 'What can I help you with?',
+                        fontSize: 20,
+                        fontFamily: 'B',
+                      ),
+                    ],
                   ),
                 );
               }
@@ -328,43 +288,3 @@ class ChatRoomScreen extends StatelessWidget {
         }));
   }
 }
-// Padding(
-//   padding: EdgeInsets.symmetric(horizontal: 20.w),
-//   child: Center(
-//     child: Column(
-//       children: [
-//         Spacer(),
-//         TextWidget(text: 'Under Development Chat Screen', fontSize: 20.sp),
-//         Spacer(),
-//         InkWell(
-//           onTap: () {
-//             box.erase();
-//             googleSignIn.signOut();
-//             Get.offAll(
-//               () => LoginScreen(),
-//               transition: Transition.fadeIn,
-//               duration: Duration(milliseconds: 500),
-//             );
-//           },
-//           child: Container(
-//             height: 50.h,
-//             margin: EdgeInsets.symmetric(horizontal: 20.w),
-//             width: width,
-//             alignment: Alignment.center,
-//             decoration: BoxDecoration(
-//               borderRadius: BorderRadius.circular(4.r),
-//               color: transparent,
-//               border: Border.all(
-//                 color: purpleShad,
-//                 width: 2.w,
-//               ),
-//             ),
-//             child: TextWidget(
-//                 text: 'Log out', fontFamily: 'S', fontSize: 17.sp, color: purpleShad),
-//           ),
-//         ),
-//         heightBox(30)
-//       ],
-//     ),
-//   ),
-// ),

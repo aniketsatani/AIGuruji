@@ -11,53 +11,9 @@ class ChatroomController extends GetxController {
 
   final ScrollController scrollController = ScrollController();
 
- // RxString chatRoomId = ''.obs;
-
   @override
   void onInit() {
     super.onInit();
-  }
-
-  void fetchChatRoomsAndMessages() async {
-    try {
-      // Step 1: Get all chatRoom documents
-      final chatRoomsSnapshot = await FirebaseFirestore.instance
-          .collection('chatUser')
-          .doc('0B0ih1qX5chStCaM45uTZnFLTWP2')
-          .collection('chatRoom')
-          .get();
-      print('👉 chat rooms found for user: $userId');
-
-      print('✅ Total ChatRooms: ${chatRoomsSnapshot.docs.length}');
-      print('👉 ChatRoom IDs: ${chatRoomsSnapshot.docs.map((e) => e.id).toList()}');
-
-      // Step 2: For each chatRoom, get the latest message
-      for (var chatRoomDoc in chatRoomsSnapshot.docs) {
-        final chatRoomId = chatRoomDoc.id;
-
-        print('\n🔍 Fetching latest message for ChatRoom ID: $chatRoomId');
-
-        final messagesSnapshot = await FirebaseFirestore.instance
-            .collection('chatUser')
-            .doc('0B0ih1qX5chStCaM45uTZnFLTWP2')
-            .collection('chatRoom')
-            .doc(chatRoomId)
-            .collection('messages')
-            .orderBy('time', descending: true)
-            .limit(1)
-            .get();
-
-        if (messagesSnapshot.docs.isEmpty) {
-          print('⚠️ No messages found in chatRoom: ${messagesSnapshot.docs.length}');
-        } else {
-          final latestMessageDoc = messagesSnapshot.docs.first;
-          final messageText = latestMessageDoc.data()['text'];
-          print('✅ Latest message in $chatRoomId: $messageText');
-        }
-      }
-    } catch (e) {
-      print('❌ Error: $e');
-    }
   }
 
   Future<void> sendMessage({
@@ -68,12 +24,17 @@ class ChatroomController extends GetxController {
       isAILoading.value = true;
       scrollToBottom();
       final firestore = FirebaseFirestore.instance;
-      final messageRef = firestore
-          .collection('chatUser')
-          .doc(userId)
-          .collection('chatRoom')
-          .doc(chatroomId)
-          .collection('messages');
+      final chatRoomRef =
+          firestore.collection('Chats').doc(userId).collection('chatRoom').doc(chatroomId);
+
+      if (isNewRoom.value == true) {
+        await chatRoomRef.set({
+                'createdAt': DateTime.now(),
+                'firstMessage': text,
+              }, SetOptions(merge: true));
+      }
+
+      final messageRef = chatRoomRef.collection('Messages');
 
       // Store user message
       await messageRef.add({
@@ -81,6 +42,10 @@ class ChatroomController extends GetxController {
         'text': text,
         'time': DateTime.now(),
       });
+
+      isNewRoom.value = false;
+
+      // Store AI message
       final url = Uri.parse('https://dd9d03d45551.ngrok-free.app/text');
       final response = await http.post(
         url,
@@ -99,11 +64,8 @@ class ChatroomController extends GetxController {
           'response_audio_url': data['response_audio_url'],
           'time': DateTime.now(),
         });
-        isAILoading.value = false;
-      } else {
-        isAILoading.value = false;
-        print('Error: ${response.statusCode}\nBody: ${response.body}');
       }
+      isAILoading.value = false;
     } catch (e, t) {
       isAILoading.value = false;
       print('Error : ${e}\nTrace : ${t}');
@@ -117,5 +79,4 @@ class ChatroomController extends GetxController {
       }
     });
   }
-
 }

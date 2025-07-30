@@ -1,3 +1,4 @@
+import 'package:aiguruji/API/api.dart';
 import 'package:aiguruji/Constant/colors.dart';
 import 'package:aiguruji/Constant/constant.dart';
 import 'package:aiguruji/UI/splash_screen.dart';
@@ -18,13 +19,21 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]); /// phone orientation
+  ]);
+
+  /// phone orientation
 
   userId = box.read('userId') ?? '';
 
-  await firebaseCrashytics(); /// app crash detect
+  if (userId.isNotEmpty) await Api().getUser();
 
-  await getAppVersion(); /// app version
+  await firebaseCrashytics();
+
+  /// app crash detect
+
+  await getAppVersion();
+
+  /// app version
   runApp(const MyApp());
 }
 

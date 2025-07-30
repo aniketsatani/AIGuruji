@@ -11,6 +11,7 @@ final box = GetStorage();
 var uuid = Uuid();
 
 RxString chatRoomId = ''.obs;
+RxBool isNewRoom = false.obs;
 
 String userId = '';
 RxString name = ''.obs;
