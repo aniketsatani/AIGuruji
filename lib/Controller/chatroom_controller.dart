@@ -23,9 +23,26 @@ class ChatroomController extends GetxController {
     try {
       isAILoading.value = true;
       scrollToBottom();
+
+    List<Map<String, dynamic>> lastMessages = await getLast10Messages();
+
+      List<Map<String, dynamic>> chatHistory = [];
+
+      if (lastMessages.isNotEmpty) {
+        chatHistory = lastMessages.map((msg) {
+          return {
+            "role": msg['role'],
+            "content": msg['content'],
+          };
+        }).toList().reversed.toList();
+      }
+
+
+      print('hello data history --- ${chatHistory}');
+
       final firestore = FirebaseFirestore.instance;
       final chatRoomRef =
-          firestore.collection('Chats').doc(userId).collection('chatRoom').doc(chatroomId);
+          firestore.collection('Chats').doc(userId).collection('ChatRoom').doc(chatroomId);
 
       if (isNewRoom.value == true) {
         await chatRoomRef.set({
@@ -38,30 +55,32 @@ class ChatroomController extends GetxController {
 
       // Store user message
       await messageRef.add({
-        'sender': 'user',
-        'text': text,
+        'role': 'user',
+        'content': text,
         'time': DateTime.now(),
       });
 
       isNewRoom.value = false;
 
       // Store AI message
-      final url = Uri.parse('https://dd9d03d45551.ngrok-free.app/text');
+      final url = Uri.parse(baseUrl);
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json', 'X-API-Key': 'XCoderInfotechBaba'},
+        headers: {'Content-Type': 'application/json', 'X-API-KEY': apiKey},
         body: jsonEncode({
           "session_id": chatroomId,
-          "text": text,
-          "language": "en",
+          "message": text,
+          "chat_history": chatHistory,
         }),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
+        print('hello response data body --- ${data}');
+
         await messageRef.add({
-          'sender': 'ai',
-          'response_text': data['response_text'],
-          'response_audio_url': data['response_audio_url'],
+          'role': 'ai',
+          'content': data['response'],
           'time': DateTime.now(),
         });
       }
@@ -70,6 +89,31 @@ class ChatroomController extends GetxController {
       isAILoading.value = false;
       print('Error : ${e}\nTrace : ${t}');
     }
+  }
+
+
+  Future<List<Map<String, dynamic>>> getLast10Messages() async {
+    final firestore = FirebaseFirestore.instance;
+
+    final messagesRef = firestore
+        .collection('Chats')
+        .doc(userId)
+        .collection('ChatRoom')
+        .doc(chatRoomId.value)
+        .collection('Messages');
+
+    final snapshot = await messagesRef
+        .orderBy('time', descending: true) // latest first
+        .limit(10)
+        .get();
+
+    // If no data, return empty list
+    if (snapshot.docs.isEmpty) {
+      return [];
+    }
+
+    // Return the data
+    return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
   void scrollToBottom() {

@@ -26,6 +26,7 @@ Future<void> main() async {
   userId = box.read('userId') ?? '';
 
   if (userId.isNotEmpty) await Api().getUser();
+  await Api().getAIGurujiData();
 
   await firebaseCrashytics();
 

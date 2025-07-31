@@ -107,6 +107,11 @@ class SpeechController extends GetxController {
     }
   }
 
+
+  Future<void> callApi() async {
+
+  }
+
   String _generateSmartResponse(String input) {
     String lowerInput = input.toLowerCase();
 

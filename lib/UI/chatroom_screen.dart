@@ -175,7 +175,7 @@ class ChatRoomScreen extends StatelessWidget {
             stream: FirebaseFirestore.instance
                 .collection('Chats')
                 .doc(userId)
-                .collection('chatRoom')
+                .collection('ChatRoom')
                 .doc(chatRoomId.value)
                 .collection('Messages')
                 .orderBy('time')

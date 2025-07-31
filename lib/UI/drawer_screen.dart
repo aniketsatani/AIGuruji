@@ -49,7 +49,7 @@ class CustomDrawer extends StatelessWidget {
                 stream: FirebaseFirestore.instance
                     .collection('Chats')
                     .doc(userId)
-                    .collection('chatRoom')
+                    .collection('ChatRoom')
                     .orderBy('createdAt', descending: true)
                     .snapshots(),
                 builder: (context, chatRoomSnapshot) {
@@ -58,6 +58,9 @@ class CustomDrawer extends StatelessWidget {
                   }
 
                   final chatRooms = chatRoomSnapshot.data!.docs;
+                  if (chatRooms.isEmpty) {
+                    return Center(child: TextWidget(text: 'No chat rooms found.',fontSize: 16,));
+                  }
 
                   return ListView.separated(
                     itemCount: chatRooms.length,
@@ -102,7 +105,7 @@ class CustomDrawer extends StatelessWidget {
                               await FirebaseFirestore.instance
                                   .collection('Chats')
                                   .doc(userId)
-                                  .collection('chatRoom')
+                                  .collection('ChatRoom')
                                   .doc(chatRoomIdDatabase)
                                   .delete();
                             },

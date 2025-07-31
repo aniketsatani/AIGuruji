@@ -11,7 +11,7 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isUser = message['sender'] == 'user';
+    bool isUser = message['role'] == 'user';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -53,8 +53,8 @@ class MessageBubble extends StatelessWidget {
                     bottomRight: isUser ? Radius.zero : Radius.circular(12.r)),
               ),
               child: isUser
-                  ? TextWidget(text: message['text'], color: white, fontSize: 17.sp, maxLines: null)
-                  : TextResponseWidget(text: message['response_text'])),
+                  ? TextWidget(text: message['content'], color: white, fontSize: 17.sp, maxLines: null)
+                  : TextResponseWidget(text: message['content'])),
         ),
         // if (isUser) SizedBox(width: 8.w),
         // if (isUser)
