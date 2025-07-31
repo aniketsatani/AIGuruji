@@ -19,3 +19,8 @@ AI Guruji
 - ngrok ->  ngrok http Url [from the python program] [ex: ngrok http http://locahost:8000] // ngrok http http://0.0.0.0:8000
 - postman -> testing [method post : paste the url from ngrok]
 - dont close the ngrok terminal & python program during testing
+
+
+/// D:\XCoderInfotech\AIGuruji\android\app\build.gradle
+
+keytool -genkey -v -keystore D:\XCoderInfotech\AIGuruji\android\app\AIGuruji.jks -alias AIGuruji -keyalg RSA -sigalg SHA1withRSA -keysize 2048 -validity 10000
