@@ -74,13 +74,14 @@ class ChatroomController extends GetxController {
         }),
       );
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final decodedBody = utf8.decode(response.bodyBytes); // 👈 Important
+        final jsonData = jsonDecode(decodedBody);
 
-        print('hello response data body --- ${data}');
+        print(jsonData['response']);
 
         await messageRef.add({
           'role': 'ai',
-          'content': data['response'],
+          'content': jsonData['response'],
           'time': DateTime.now(),
         });
       }
