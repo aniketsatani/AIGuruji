@@ -83,6 +83,7 @@ class CustomDrawer extends StatelessWidget {
                               onTap: () {
                                 isNewRoom.value = false;
                                 chatRoomId.value = chatRoomIdDatabase;
+                                Get.back();
                               },
                               child: Container(
                                 child: TextWidget(

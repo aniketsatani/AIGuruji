@@ -24,19 +24,22 @@ class ChatroomController extends GetxController {
       isAILoading.value = true;
       scrollToBottom();
 
-    List<Map<String, dynamic>> lastMessages = await getLast10Messages();
+      List<Map<String, dynamic>> lastMessages = await getLast10Messages();
 
       List<Map<String, dynamic>> chatHistory = [];
 
       if (lastMessages.isNotEmpty) {
-        chatHistory = lastMessages.map((msg) {
-          return {
-            "role": msg['role'],
-            "content": msg['content'],
-          };
-        }).toList().reversed.toList();
+        chatHistory = lastMessages
+            .map((msg) {
+              return {
+                "role": msg['role'],
+                "content": msg['content'],
+              };
+            })
+            .toList()
+            .reversed
+            .toList();
       }
-
 
       print('hello data history --- ${chatHistory}');
 
@@ -46,9 +49,9 @@ class ChatroomController extends GetxController {
 
       if (isNewRoom.value == true) {
         await chatRoomRef.set({
-                'createdAt': DateTime.now(),
-                'firstMessage': text,
-              }, SetOptions(merge: true));
+          'createdAt': DateTime.now(),
+          'firstMessage': text,
+        }, SetOptions(merge: true));
       }
 
       final messageRef = chatRoomRef.collection('Messages');
@@ -91,7 +94,6 @@ class ChatroomController extends GetxController {
       print('Error : ${e}\nTrace : ${t}');
     }
   }
-
 
   Future<List<Map<String, dynamic>>> getLast10Messages() async {
     final firestore = FirebaseFirestore.instance;

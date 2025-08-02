@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:aiguruji/Constant/constant.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:http/http.dart' as http;
 
 RxBool isListening = false.obs;
 RxString centerText = 'What can I help you with?'.obs;
@@ -10,9 +15,12 @@ RxString centerText = 'What can I help you with?'.obs;
 class SpeechController extends GetxController {
   final SpeechToText speech = SpeechToText();
 
+  final FlutterTts flutterTts = FlutterTts();
+
+
   RxBool isAvailable = false.obs;
   RxString recognizedText = ''.obs;
-  RxString response = ''.obs;
+  RxString responseAI = ''.obs;
   RxBool showResponse = false.obs;
   RxBool isLastResponse = false.obs;
 
@@ -44,10 +52,11 @@ class SpeechController extends GetxController {
   }
 
   Future<void> startListening() async {
+    await stopSpeech();
     //await initializeSpeech();
     showResponse.value = false;
     recognizedText.value = '';
-    response.value = '';
+    responseAI.value = '';
     centerText.value = 'I\'m listening.....';
 
     await speech.listen(
@@ -95,10 +104,12 @@ class SpeechController extends GetxController {
     centerText.value = 'Thinking.....';
 
     try {
-      await Future.delayed(Duration(seconds: 4)); // Simulated delay
+     // await Future.delayed(Duration(seconds: 4)); // Simulated delay
 
-      String generatedResponse = _generateSmartResponse(spokenText);
-      response.value = generatedResponse;
+      await sendMessage(chatroomId: chatRoomId.value, text: spokenText.trim());
+
+       //String generatedResponse = _generateSmartResponse(spokenText);
+       //responseAI.value = generatedResponse;
 
       showResponse.value = true;
       isLastResponse.value = false;
@@ -107,10 +118,6 @@ class SpeechController extends GetxController {
     }
   }
 
-
-  Future<void> callApi() async {
-
-  }
 
   String _generateSmartResponse(String input) {
     String lowerInput = input.toLowerCase();
@@ -156,12 +163,132 @@ class SpeechController extends GetxController {
     }
   }
 
-  void clearData() {
+
+  Future<void> sendMessage({
+    required String chatroomId,
+    required String text,
+  }) async {
+    try {
+      isAILoading.value = true;
+      //scrollToBottom();
+
+      List<Map<String, dynamic>> lastMessages = await getLast10Messages();
+
+      List<Map<String, dynamic>> chatHistory = [];
+
+      if (lastMessages.isNotEmpty) {
+        chatHistory = lastMessages
+            .map((msg) {
+          return {
+            "role": msg['role'],
+            "content": msg['content'],
+          };
+        })
+            .toList()
+            .reversed
+            .toList();
+      }
+
+      print('hello data history --- ${chatHistory}');
+
+      final firestore = FirebaseFirestore.instance;
+      final chatRoomRef =
+      firestore.collection('Chats').doc(userId).collection('ChatRoom').doc(chatroomId);
+
+      if (isNewRoom.value == true) {
+        await chatRoomRef.set({
+          'createdAt': DateTime.now(),
+          'firstMessage': text,
+        }, SetOptions(merge: true));
+      }
+
+      final messageRef = chatRoomRef.collection('Messages');
+
+      // Store user message
+      await messageRef.add({
+        'role': 'user',
+        'content': text,
+        'time': DateTime.now(),
+      });
+
+      isNewRoom.value = false;
+
+      // Store AI message
+      final url = Uri.parse(baseUrl);
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json', 'X-API-KEY': apiKey},
+        body: jsonEncode({
+          "session_id": chatroomId,
+          "message": text,
+          "chat_history": chatHistory,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final decodedBody = utf8.decode(response.bodyBytes);
+        final jsonData = jsonDecode(decodedBody);
+
+        print(jsonData['response']);
+
+        responseAI.value = jsonData['response'];
+        speakTextToSpeech(responseAI.value);
+
+        await messageRef.add({
+          'role': 'ai',
+          'content': jsonData['response'],
+          'time': DateTime.now(),
+        });
+      }
+      isAILoading.value = false;
+    } catch (e, t) {
+      isAILoading.value = false;
+      print('Error : ${e}\nTrace : ${t}');
+    }
+  }
+
+  Future<void> speakTextToSpeech(String text) async {
+    await flutterTts.setLanguage("en-US");
+    //await flutterTts.setPitch(1.0);
+    //await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
+  }
+
+  Future<void> stopSpeech() async {
+    await flutterTts.stop();
+  }
+
+  Future<List<Map<String, dynamic>>> getLast10Messages() async {
+    final firestore = FirebaseFirestore.instance;
+
+    final messagesRef = firestore
+        .collection('Chats')
+        .doc(userId)
+        .collection('ChatRoom')
+        .doc(chatRoomId.value)
+        .collection('Messages');
+
+    final snapshot = await messagesRef
+        .orderBy('time', descending: true) // latest first
+        .limit(10)
+        .get();
+
+    // If no data, return empty list
+    if (snapshot.docs.isEmpty) {
+      return [];
+    }
+
+    // Return the data
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+
+  Future<void> clearData() async {
     recognizedText.value = '';
-    response.value = '';
+    responseAI.value = '';
     showResponse.value = false;
     isListening.value = false;
     centerText.value = 'What can I help you with?';
+    await stopSpeech();
   }
 
   @override

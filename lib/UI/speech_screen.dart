@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class SpeechScreen extends StatelessWidget {
-  SpeechController controller = Get.put(SpeechController());
+  final SpeechController controller = Get.put(SpeechController());
 
   @override
   Widget build(BuildContext context) {
@@ -69,11 +69,9 @@ class SpeechScreen extends StatelessWidget {
                 padding: EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    // Control Buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Main Control Button
 
                         // Close Button Container
                         Obx(() {
@@ -167,7 +165,7 @@ class SpeechScreen extends StatelessWidget {
   Widget ResponseDisplay() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      key: ValueKey(controller.response.value),
+      key: ValueKey(controller.responseAI.value),
       children: [
         Container(
           padding: EdgeInsets.all(15),
@@ -180,7 +178,7 @@ class SpeechScreen extends StatelessWidget {
             ),
           ),
           child: TextWidget(
-            text: controller.response.value,
+            text: controller.responseAI.value,
             color: white,
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
